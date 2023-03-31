@@ -1,16 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace dotnet_API.Models
+namespace dotnet_API.Dtos
 {
-    [Table("Usuarios")]
-    public class Usuario
+    public class CreateUserDto
     {
-        public int Id { get; set; }
         public string Nome { get; set; }
+        [Required]
         public string Login { get; set; }
+        [Required]
         public string Senha { get; set; }
+        [Required]
         public string Email { get; set; }
         public string? LocalNascimento { get; set; }
-        public DateTime DataRegistro { get; set; }
     }
 }

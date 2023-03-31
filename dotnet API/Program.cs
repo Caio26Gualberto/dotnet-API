@@ -1,4 +1,6 @@
+using dotnet_API.Controllers;
 using dotnet_API.Models;
+using dotnet_API.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApiContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MainDb")));
 
+builder.Services.AddScoped<UsuarioServico>();
+builder.Services.AddScoped<UsuarioController>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -1,7 +1,6 @@
 ﻿using dotnet_API.Dtos;
 using dotnet_API.Models;
 using dotnet_API.Services;
-
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_API.Controllers
@@ -11,10 +10,16 @@ namespace dotnet_API.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly UsuarioServico usuarioServico;
-        private readonly ApiContext context;
+        private readonly ApiContext _context;
+
+        public UsuarioController(UsuarioServico usuario, ApiContext context)
+        {
+            usuarioServico = usuario;
+            _context = context;
+        }
 
         [HttpPost("/CreateUser")]
-        public IActionResult CreateUser(Usuario input)
+        public IActionResult CreateUser(CreateUserDto input)
         {
             Usuario usuario = new Usuario();
 
@@ -32,7 +37,7 @@ namespace dotnet_API.Controllers
         [HttpPost("/DeleteUser")]
         public IActionResult DeleteUser(DeleteUserDto input)
         {
-            var user = context.Usuarios.FirstOrDefault(x => x.Id == input.Id);
+            var user = _context.Usuarios.FirstOrDefault(x => x.Id == input.Id);
             usuarioServico.DeleteUser(user);
 
             return Ok();
@@ -41,7 +46,7 @@ namespace dotnet_API.Controllers
         [HttpPost("/UpdateUser")]
         public IActionResult UpdateUser(UpdateUserDto input)
         {
-            var user = context.Usuarios.FirstOrDefault(x => x.Id == input.Id);
+            var user = _context.Usuarios.FirstOrDefault(x => x.Id == input.Id);
             if (user != null)
             {
                 user.Email = input.Email;

@@ -5,6 +5,10 @@ namespace dotnet_API.Services
     public class UsuarioServico
     {
         private readonly ApiContext _context;
+        public UsuarioServico(ApiContext context)
+        {
+            _context = context;
+        }
         public void CreateUser(Usuario input)
         {
             input.DataRegistro = DateTime.Now;
