@@ -1,5 +1,6 @@
 ﻿using dotnet_API.Dtos;
 using dotnet_API.Models;
+using dotnet_API.Repositories;
 using dotnet_API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,11 +12,13 @@ namespace dotnet_API.Controllers
     {
         private readonly UsuarioServico usuarioServico;
         private readonly ApiContext _context;
+        private readonly UsuarioRepository _usuarioRepository;
 
-        public UsuarioController(UsuarioServico usuario, ApiContext context)
+        public UsuarioController(UsuarioServico usuario, ApiContext context, UsuarioRepository usuarioRepository)
         {
             usuarioServico = usuario;
             _context = context;
+            _usuarioRepository = usuarioRepository;
         }
 
         [HttpPost("/CreateUser")]
@@ -56,6 +59,15 @@ namespace dotnet_API.Controllers
                 usuarioServico.UpdateUser(user);
             }
             return Ok();
+        }
+
+        [HttpGet("/GetUserById")]
+        public async Task<IActionResult> GetUserById(int input)
+        {
+            var usuario = _usuarioRepository.GetAll()
+                .Where(x => x.Id == input);
+
+            return Ok(usuario);
         }
     }
 }

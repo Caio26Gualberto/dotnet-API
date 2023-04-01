@@ -1,4 +1,5 @@
 ﻿using dotnet_API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_API.Services
 {
