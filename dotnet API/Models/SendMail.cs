@@ -1,40 +1,45 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Net;
-using System.Net.Mail;
-using System.Text;
+﻿using Microsoft.Office.Interop.Outlook;
+using System.ComponentModel.DataAnnotations.Schema;
+using Exception = System.Exception;
+using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace dotnet_API.Models
 {
     [Table("ResetPasswords")]
     public class SendMail : Password
     {
-        public int Id { get; set; }       
-        private readonly Email _email;
-        public SendMail(Email email)
+        public int Id { get; set; }  
+        public string Body { get; set; }
+
+        private readonly ApiContext ApiContext;
+        private Email _email { get; set; }
+
+        public SendMail () {}
+        public SendMail(Email email, ApiContext context)
         {
             _email = email;
+            context.SendMails.Add(this);
+            ApiContext = context;
         }
-
-        public void SendEmail(string email)
-        {
-            MailMessage message = new MailMessage();
-            var encryptedPassword = EncryptedPassword();
+        public void SendEmail(string userEmail, ApiContext context)
+        {        
+            Email email = new Email();
             try
             {
-                var smtpClient = new SmtpClient("smtp.gmail.com", 587);
-                smtpClient.EnableSsl = true;
-                smtpClient.Timeout = 1000;
-                smtpClient.UseDefaultCredentials = false;
-                smtpClient.Credentials = new NetworkCredential("anewlevelmusic@gmail.com", Encoding.UTF8.GetString(encryptedPassword));
+                Application app = new Outlook.Application();
+                MailItem emailToSend = app.CreateItem(OlItemType.olMailItem) as MailItem;
 
-                message.From = new MailAddress("anewlevelmusic@gmail.com", "Redefinição de senha");
-                message.Body = _email.BodyMessage;
-                message.Subject = _email.Title;
-                message.IsBodyHtml = true;
-                message.Priority = MailPriority.Normal;
-                message.To.Add(email);
+                emailToSend.To = userEmail;
+                emailToSend.Subject = _email.Title;
+                emailToSend.Body = _email.BodyMessage;
+                emailToSend.Send();
 
-                smtpClient.Send(message);
+                SendMail sendMail = new SendMail(email, context)
+                {
+                    Body = emailToSend.Body,
+                };
+                ApiContext.SendMails.Add(sendMail);
+
             }
             catch (Exception e)
             {

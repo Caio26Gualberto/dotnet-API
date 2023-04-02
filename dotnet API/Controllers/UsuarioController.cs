@@ -14,15 +14,14 @@ namespace dotnet_API.Controllers
         private readonly UsuarioServico usuarioServico;
         private readonly ApiContext _context;
         private readonly UsuarioRepository _usuarioRepository;
-        private readonly Email _email;
+        private readonly SendMail sendMail;
 
-        public UsuarioController(UsuarioServico usuario, ApiContext context, UsuarioRepository usuarioRepository, Email email)
+        public UsuarioController(UsuarioServico usuario, ApiContext context, UsuarioRepository usuarioRepository, SendMail sendMail)
         {
             usuarioServico = usuario;
             _context = context;
             _usuarioRepository = usuarioRepository;
-            _email = email;
-
+            this.sendMail = sendMail;
         }
 
         [HttpPost("/CreateUser")]
@@ -76,13 +75,12 @@ namespace dotnet_API.Controllers
 
         [HttpPost("/ForgottenPassword")]
         public async Task<IActionResult> ResetPassword(int userId)
-        {
-            SendMail s = new SendMail(_email);
+        { 
             var userMail = _usuarioRepository.GetAll()
                 .Where(x => x.Id == userId)
                 .FirstOrDefault();
 
-            s.SendEmail(userMail.Email);
+            sendMail.SendEmail(userMail.Email, _context);
             return Ok();
         }
     }

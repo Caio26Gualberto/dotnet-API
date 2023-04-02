@@ -8,6 +8,7 @@ namespace dotnet_API.Models
         public DbSet<Produto> Produtos { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<SendMail> SendMails { get; set; }
+        public DbSet<Email> Emails { get; set; }
 
         public ApiContext(DbContextOptions<ApiContext> options) : base(options)
         {
