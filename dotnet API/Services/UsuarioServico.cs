@@ -32,7 +32,7 @@ namespace dotnet_API.Services
 
         public void UpdateUser(Usuario input)
         {
-            _context.Update<Usuario>(input);
+            _context.Update(input);
         }
     }
 }

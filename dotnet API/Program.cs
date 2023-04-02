@@ -14,6 +14,8 @@ builder.Services.AddDbContext<ApiContext>(options => options.UseSqlServer(builde
 builder.Services.AddScoped<UsuarioServico>();
 builder.Services.AddScoped<UsuarioController>();
 builder.Services.AddScoped<UsuarioRepository>();
+builder.Services.AddScoped<Email>();
+builder.Services.AddScoped<SendMail>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

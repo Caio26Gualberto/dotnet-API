@@ -2,6 +2,7 @@
 using dotnet_API.Models;
 using dotnet_API.Repositories;
 using dotnet_API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_API.Controllers
@@ -13,12 +14,15 @@ namespace dotnet_API.Controllers
         private readonly UsuarioServico usuarioServico;
         private readonly ApiContext _context;
         private readonly UsuarioRepository _usuarioRepository;
+        private readonly Email _email;
 
-        public UsuarioController(UsuarioServico usuario, ApiContext context, UsuarioRepository usuarioRepository)
+        public UsuarioController(UsuarioServico usuario, ApiContext context, UsuarioRepository usuarioRepository, Email email)
         {
             usuarioServico = usuario;
             _context = context;
             _usuarioRepository = usuarioRepository;
+            _email = email;
+
         }
 
         [HttpPost("/CreateUser")]
@@ -62,12 +66,24 @@ namespace dotnet_API.Controllers
         }
 
         [HttpGet("/GetUserById")]
-        public async Task<IActionResult> GetUserById(int input)
+        public async Task<IActionResult> GetUserById(int userId)
         {
             var usuario = _usuarioRepository.GetAll()
-                .Where(x => x.Id == input);
+                .Where(x => x.Id == userId);
 
             return Ok(usuario);
+        }
+
+        [HttpPost("/ForgottenPassword")]
+        public async Task<IActionResult> ResetPassword(int userId)
+        {
+            SendMail s = new SendMail(_email);
+            var userMail = _usuarioRepository.GetAll()
+                .Where(x => x.Id == userId)
+                .FirstOrDefault();
+
+            s.SendEmail(userMail.Email);
+            return Ok();
         }
     }
 }
