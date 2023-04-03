@@ -1,4 +1,5 @@
-﻿using Microsoft.Office.Interop.Outlook;
+﻿using dotnet_API.Interfaces;
+using Microsoft.Office.Interop.Outlook;
 using System.ComponentModel.DataAnnotations.Schema;
 using Exception = System.Exception;
 using Outlook = Microsoft.Office.Interop.Outlook;
@@ -6,7 +7,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 namespace dotnet_API.Models
 {
     [Table("ResetPasswords")]
-    public class SendMail : Password
+    public class SendMail : Password, ISendMail
     {
         public int Id { get; set; }  
         public string Body { get; set; }

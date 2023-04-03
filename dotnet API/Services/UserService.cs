@@ -3,21 +3,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_API.Services
 {
-    public class UsuarioServico
+    public class UserService
     {
         private readonly ApiContext _context;
-        public UsuarioServico(ApiContext context)
+        public UserService(ApiContext context)
         {
             _context = context;
         }
-        public void CreateUser(Usuario input)
+        public void CreateUser(User input)
         {
             input.DataRegistro = DateTime.Now;
             _context.Usuarios.Add(input);
             _context.SaveChanges();
         }
 
-        public void DeleteUser(Usuario input)
+        public void DeleteUser(User input)
         {
             var user = _context.Usuarios.FirstOrDefault(x => x.Id == input.Id);
 
@@ -30,7 +30,7 @@ namespace dotnet_API.Services
             throw new Exception("Não foi possível achar um usuário");
         }
 
-        public void UpdateUser(Usuario input)
+        public void UpdateUser(User input)
         {
             _context.Update(input);
         }

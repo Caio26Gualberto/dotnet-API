@@ -1,4 +1,5 @@
 using dotnet_API.Controllers;
+using dotnet_API.Interfaces;
 using dotnet_API.Models;
 using dotnet_API.Repositories;
 using dotnet_API.Services;
@@ -11,11 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApiContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MainDb")));
 
 //Todo aprender nova forma de simplificar e organizar as injeções de dependências
-builder.Services.AddScoped<UsuarioServico>();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<UsuarioController>();
-builder.Services.AddScoped<UsuarioRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UserRepository>();
 builder.Services.AddScoped<Email>();
-builder.Services.AddScoped<SendMail>();
+builder.Services.AddScoped<ISendMail, SendMail>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

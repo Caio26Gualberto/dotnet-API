@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace dotnet_API.Models
 {
     [Table("Usuarios")]
-    public class Usuario
+    public class User
     {
         public int Id { get; set; }
         [Required]

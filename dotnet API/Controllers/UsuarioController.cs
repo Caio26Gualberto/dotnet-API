@@ -11,12 +11,12 @@ namespace dotnet_API.Controllers
     [ApiController]
     public class UsuarioController : ControllerBase
     {
-        private readonly UsuarioServico usuarioServico;
+        private readonly UserService usuarioServico;
         private readonly ApiContext _context;
-        private readonly UsuarioRepository _usuarioRepository;
+        private readonly UserRepository _usuarioRepository;
         private readonly SendMail sendMail;
 
-        public UsuarioController(UsuarioServico usuario, ApiContext context, UsuarioRepository usuarioRepository, SendMail sendMail)
+        public UsuarioController(UserService usuario, ApiContext context, UserRepository usuarioRepository, SendMail sendMail)
         {
             usuarioServico = usuario;
             _context = context;
@@ -27,7 +27,7 @@ namespace dotnet_API.Controllers
         [HttpPost("/CreateUser")]
         public IActionResult CreateUser(CreateUserDto input)
         {
-            Usuario usuario = new Usuario();
+            User usuario = new User();
 
             usuario.Nome = input.Nome;
             usuario.Email = input.Email;
