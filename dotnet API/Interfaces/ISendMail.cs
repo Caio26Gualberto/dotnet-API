@@ -4,6 +4,6 @@ namespace dotnet_API.Interfaces
 {
     public interface ISendMail
     {
-        public void SendEmail(string userEmail, ApiContext context);
+        public Task<string> SendEmail(string userEmail, ANewLevelContext context);
     }
 }

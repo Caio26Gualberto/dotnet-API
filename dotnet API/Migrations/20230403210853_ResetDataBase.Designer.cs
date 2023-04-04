@@ -11,9 +11,9 @@ using dotnet_API.Models;
 
 namespace dotnet_API.Migrations
 {
-    [DbContext(typeof(ApiContext))]
-    [Migration("20230402054028_AdicionandoTabelaEmail")]
-    partial class AdicionandoTabelaEmail
+    [DbContext(typeof(ANewLevelContext))]
+    [Migration("20230403210853_ResetDataBase")]
+    partial class ResetDataBase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace dotnet_API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("dotnet_API.Models.Email", b =>
+            modelBuilder.Entity("dotnet_API.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,37 +33,16 @@ namespace dotnet_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("BodyMessage")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Emails");
-                });
-
-            modelBuilder.Entity("dotnet_API.Models.Produto", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UsuarioId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UsuarioId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Produtos");
                 });
@@ -76,7 +55,7 @@ namespace dotnet_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("body")
+                    b.Property<string>("Body")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -85,7 +64,7 @@ namespace dotnet_API.Migrations
                     b.ToTable("ResetPasswords");
                 });
 
-            modelBuilder.Entity("dotnet_API.Models.Usuario", b =>
+            modelBuilder.Entity("dotnet_API.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -125,18 +104,18 @@ namespace dotnet_API.Migrations
                     b.ToTable("Usuarios");
                 });
 
-            modelBuilder.Entity("dotnet_API.Models.Produto", b =>
+            modelBuilder.Entity("dotnet_API.Models.Product", b =>
                 {
-                    b.HasOne("dotnet_API.Models.Usuario", "Usuario")
+                    b.HasOne("dotnet_API.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UsuarioId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Usuario");
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("dotnet_API.Models.Usuario", b =>
+            modelBuilder.Entity("dotnet_API.Models.User", b =>
                 {
                     b.HasOne("dotnet_API.Models.SendMail", "SendMail")
                         .WithMany()

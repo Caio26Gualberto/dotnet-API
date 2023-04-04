@@ -6,11 +6,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace dotnet_API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class ResetDataBase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "ResetPasswords",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Body = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ResetPasswords", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Usuarios",
                 columns: table => new
@@ -22,11 +35,17 @@ namespace dotnet_API.Migrations
                     Senha = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LocalNascimento = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DataRegistro = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    DataRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SendMailId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Usuarios", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Usuarios_ResetPasswords_SendMailId",
+                        column: x => x.SendMailId,
+                        principalTable: "ResetPasswords",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -35,24 +54,29 @@ namespace dotnet_API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UsuarioId = table.Column<int>(type: "int", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Produtos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Produtos_Usuarios_UsuarioId",
-                        column: x => x.UsuarioId,
+                        name: "FK_Produtos_Usuarios_UserId",
+                        column: x => x.UserId,
                         principalTable: "Usuarios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Produtos_UsuarioId",
+                name: "IX_Produtos_UserId",
                 table: "Produtos",
-                column: "UsuarioId");
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Usuarios_SendMailId",
+                table: "Usuarios",
+                column: "SendMailId");
         }
 
         /// <inheritdoc />
@@ -63,6 +87,9 @@ namespace dotnet_API.Migrations
 
             migrationBuilder.DropTable(
                 name: "Usuarios");
+
+            migrationBuilder.DropTable(
+                name: "ResetPasswords");
         }
     }
 }

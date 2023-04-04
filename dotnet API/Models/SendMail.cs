@@ -1,46 +1,31 @@
 ﻿using dotnet_API.Interfaces;
-using Microsoft.Office.Interop.Outlook;
+using SendGrid;
 using System.ComponentModel.DataAnnotations.Schema;
 using Exception = System.Exception;
-using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace dotnet_API.Models
 {
     [Table("ResetPasswords")]
     public class SendMail : Password, ISendMail
     {
-        public int Id { get; set; }  
+        public int Id { get; set; }
         public string Body { get; set; }
 
-        private readonly ApiContext ApiContext;
-        private Email _email { get; set; }
+        private readonly SendGridMail SendGridMail;
 
-        public SendMail () {}
-        public SendMail(Email email, ApiContext context)
+        public SendMail() { }
+        public SendMail(SendGridMail email)
         {
-            _email = email;
-            context.SendMails.Add(this);
-            ApiContext = context;
+            SendGridMail = email;
         }
-        public void SendEmail(string userEmail, ApiContext context)
-        {        
-            Email email = new Email();
+        public async Task<string> SendEmail(string userEmail, ANewLevelContext context)
+        {
+            SendMail email = new SendMail();
+
             try
             {
-                Application app = new Outlook.Application();
-                MailItem emailToSend = app.CreateItem(OlItemType.olMailItem) as MailItem;
-
-                emailToSend.To = userEmail;
-                emailToSend.Subject = _email.Title;
-                emailToSend.Body = _email.BodyMessage;
-                emailToSend.Send();
-
-                SendMail sendMail = new SendMail(email, context)
-                {
-                    Body = emailToSend.Body,
-                };
-                ApiContext.SendMails.Add(sendMail);
-
+                var a = await SendGridMail.Execute(userEmail, context);
+                return a;
             }
             catch (Exception e)
             {

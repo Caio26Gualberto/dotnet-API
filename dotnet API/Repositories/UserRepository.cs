@@ -5,9 +5,9 @@ namespace dotnet_API.Repositories
 {
     public class UserRepository : IUsuarioRepository
     {
-        private readonly ApiContext _context;
+        private readonly ANewLevelContext _context;
 
-        public UserRepository(ApiContext context)
+        public UserRepository(ANewLevelContext context)
         {
             _context = context;
         }

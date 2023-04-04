@@ -5,8 +5,8 @@ namespace dotnet_API.Services
 {
     public class UserService
     {
-        private readonly ApiContext _context;
-        public UserService(ApiContext context)
+        private readonly ANewLevelContext _context;
+        public UserService(ANewLevelContext context)
         {
             _context = context;
         }
@@ -17,17 +17,16 @@ namespace dotnet_API.Services
             _context.SaveChanges();
         }
 
-        public void DeleteUser(User input)
+        public void DeleteUser(User user)
         {
-            var user = _context.Usuarios.FirstOrDefault(x => x.Id == input.Id);
-
             if (user != null)
             {
                 _context.Usuarios.Remove(user);
                 _context.SaveChanges();
             }
-
-            throw new Exception("Não foi possível achar um usuário");
+            else { 
+                throw new Exception("Não foi possível deletar o usuário"); 
+            }           
         }
 
         public void UpdateUser(User input)
