@@ -8,8 +8,7 @@ namespace dotnet_API.Models
     {
         public int Id { get; set; }  
         public string Name { get; set; }
-
-        public List<Style> Styles { get; set; }
+        public EStyle Style { get; set; }
         public virtual User? User { get; set; } 
     }
 }

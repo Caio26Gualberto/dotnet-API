@@ -1,6 +1,6 @@
 ﻿namespace dotnet_API.Enumerables
 {
-    public enum Style
+    public enum EStyle 
     {
         ClassicRock = 0,
         HeavyMetal = 1,

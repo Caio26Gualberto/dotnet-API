@@ -12,8 +12,8 @@ using dotnet_API.Models;
 namespace dotnet_API.Migrations
 {
     [DbContext(typeof(ANewLevelContext))]
-    [Migration("20230403210853_ResetDataBase")]
-    partial class ResetDataBase
+    [Migration("20230404215114_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace dotnet_API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("dotnet_API.Models.Product", b =>
+            modelBuilder.Entity("dotnet_API.Models.Artist", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -37,14 +37,17 @@ namespace dotnet_API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("Style")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Produtos");
+                    b.ToTable("Artistas");
                 });
 
             modelBuilder.Entity("dotnet_API.Models.SendMail", b =>
@@ -104,13 +107,11 @@ namespace dotnet_API.Migrations
                     b.ToTable("Usuarios");
                 });
 
-            modelBuilder.Entity("dotnet_API.Models.Product", b =>
+            modelBuilder.Entity("dotnet_API.Models.Artist", b =>
                 {
                     b.HasOne("dotnet_API.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });

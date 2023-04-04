@@ -9,6 +9,6 @@ namespace dotnet_API.Models
         public virtual DbSet<SendMail> SendMails { get; set; }
         public ANewLevelContext(DbContextOptions<ANewLevelContext> options) : base(options)
         {
-        }
+        }     
     }
 }
