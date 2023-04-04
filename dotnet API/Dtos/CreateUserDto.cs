@@ -4,13 +4,13 @@ namespace dotnet_API.Dtos
 {
     public class CreateUserDto
     {
-        public string Nome { get; set; }
+        public string Name { get; set; }
         [Required]
         public string Login { get; set; }
         [Required]
-        public string Senha { get; set; }
+        public string Password { get; set; } = string.Empty;
         [Required]
         public string Email { get; set; }
-        public string? LocalNascimento { get; set; }
+        public string? BirthPlace { get; set; }
     }
 }

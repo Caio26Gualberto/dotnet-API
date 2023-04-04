@@ -4,6 +4,11 @@ using dotnet_API.Repositories;
 using dotnet_API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace dotnet_API.Controllers
 {
@@ -24,24 +29,91 @@ namespace dotnet_API.Controllers
             SendMail = sendMail;
         }
 
-        [HttpPost("/CreateUser")]
-        public IActionResult CreateUser(CreateUserDto input)
-        {
-            User usuario = new User();
+        [HttpPost("/Register")]
+        public async Task<IActionResult> CreateUser(CreateUserDto input)
+        {            
+            var isExistentAccount = UserRepository.GetAll()
+                .Any(x => x.Email == input.Email || x.Login == input.Login);
 
-            usuario.Nome = input.Nome;
+            if (isExistentAccount)
+                return BadRequest("Credencias já existentes em nosso sistema");
+
+            User usuario = new User();
+            CreatePasswordHash(input.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            usuario.Name = input.Name;
+            usuario.PasswordHash = passwordHash;
+            usuario.PasswordSalt = passwordSalt; 
             usuario.Email = input.Email;
-            usuario.LocalNascimento = input.LocalNascimento;
+            usuario.BirthPlace = input.BirthPlace;
             usuario.Login = input.Login;
-            usuario.Senha = input.Senha;
+            usuario.Password = input.Password;
 
             UserService.CreateUser(usuario);
 
-            return Ok();
+            return Ok(usuario);
         }
 
-        [HttpPost("/DeleteUser")]
-        public IActionResult DeleteUser(DeleteUserDto input)
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+            }
+        }
+
+        private bool IsVerifyPasswordHash (string password, byte[] passwordHash, byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512(passwordSalt))
+            {
+                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return computedHash.SequenceEqual(passwordHash);
+            }
+        }
+
+        private string CreateToken(User user)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Login),
+                new Claim(ClaimTypes.SerialNumber, user.Password)
+            };
+
+            var takeSecretKey = Environment.GetEnvironmentVariable("SecretKey");
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(takeSecretKey));
+            var credential = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: credential);
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwt;
+        }
+
+        [HttpPost("/Login")]
+        public async Task<ActionResult<string>> Login(CreateUserDto input)
+        {
+            var isNotAUser = UserRepository.GetAll()
+                .Any(x => x.Email != input.Email || x.Login != input.Login);
+
+            if (isNotAUser)
+                return BadRequest("Usuário não encontrado");
+
+            var usuario = UserRepository.GetAll()
+                .Where(x => x.Email == input.Email || x.Login == input.Login)
+                .FirstOrDefault();
+
+            if (!IsVerifyPasswordHash(input.Password, usuario.PasswordHash, usuario.PasswordSalt))
+                return BadRequest("Senha incorreta!");
+
+            string token = CreateToken(usuario);
+            return Ok("OKOKO");
+        }
+
+        [HttpPost("/Delete")]
+        public async Task<IActionResult> DeleteUser(DeleteUserDto input)
         {
             var user = NewLevelContext.Usuarios.FirstOrDefault(x => x.Id == input.Id);
             if (user != null)
@@ -56,16 +128,17 @@ namespace dotnet_API.Controllers
         }
 
         [HttpPost("/UpdateUser")]
-        public IActionResult UpdateUser(UpdateUserDto input)
+        public async Task<IActionResult> UpdateUser(UpdateUserDto input)
         {
             var user = NewLevelContext.Usuarios.FirstOrDefault(x => x.Id == input.Id);
             if (user != null)
             {
                 user.Email = input.Email;
-                user.LocalNascimento = input.LocalNascimento;
-                user.Nome = input.Nome;
+                user.BirthPlace = input.LocalNascimento;
+                user.Name = input.Nome;
 
-                UserService.UpdateUser(user);
+                NewLevelContext.Usuarios.Update(user);
+                NewLevelContext.SaveChanges();
             }
             return Ok();
         }

@@ -8,15 +8,17 @@ namespace dotnet_API.Models
     {
         public int Id { get; set; }
         [Required]
-        public string Nome { get; set; }
+        public string Name { get; set; }
         [Required]
         public string Login { get; set; }
         [Required]
-        public string Senha { get; set; }
+        public string Password { get; set; }
         [Required]
+        public byte[] PasswordHash { get; set; }
+        public byte[] PasswordSalt { get; set; }
         public string Email { get; set; }
-        public string? LocalNascimento { get; set; }
-        public DateTime DataRegistro { get; set; }
+        public string? BirthPlace { get; set; }
+        public DateTime DataRecord { get; set; }
         public virtual SendMail? SendMail { get; set; }
     }
 }

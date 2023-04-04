@@ -12,7 +12,7 @@ namespace dotnet_API.Services
         }
         public void CreateUser(User input)
         {
-            input.DataRegistro = DateTime.Now;
+            input.DataRecord = DateTime.Now;
             _context.Usuarios.Add(input);
             _context.SaveChanges();
         }
