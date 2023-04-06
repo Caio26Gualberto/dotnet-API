@@ -12,8 +12,8 @@ using dotnet_API.Models;
 namespace dotnet_API.Migrations
 {
     [DbContext(typeof(ANewLevelContext))]
-    [Migration("20230404215114_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20230406030803_Reset")]
+    partial class Reset
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,23 +50,6 @@ namespace dotnet_API.Migrations
                     b.ToTable("Artistas");
                 });
 
-            modelBuilder.Entity("dotnet_API.Models.SendMail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Body")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ResetPasswords");
-                });
-
             modelBuilder.Entity("dotnet_API.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -75,34 +58,37 @@ namespace dotnet_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DataRegistro")
+                    b.Property<string>("BirthPlace")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DataRecord")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LocalNascimento")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Login")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Nome")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SendMailId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Senha")
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SendMailId");
 
                     b.ToTable("Usuarios");
                 });
@@ -114,15 +100,6 @@ namespace dotnet_API.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("dotnet_API.Models.User", b =>
-                {
-                    b.HasOne("dotnet_API.Models.SendMail", "SendMail")
-                        .WithMany()
-                        .HasForeignKey("SendMailId");
-
-                    b.Navigation("SendMail");
                 });
 #pragma warning restore 612, 618
         }

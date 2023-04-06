@@ -47,23 +47,6 @@ namespace dotnet_API.Migrations
                     b.ToTable("Artistas");
                 });
 
-            modelBuilder.Entity("dotnet_API.Models.SendMail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Body")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ResetPasswords");
-                });
-
             modelBuilder.Entity("dotnet_API.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -102,12 +85,7 @@ namespace dotnet_API.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int?>("SendMailId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("SendMailId");
 
                     b.ToTable("Usuarios");
                 });
@@ -119,15 +97,6 @@ namespace dotnet_API.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("dotnet_API.Models.User", b =>
-                {
-                    b.HasOne("dotnet_API.Models.SendMail", "SendMail")
-                        .WithMany()
-                        .HasForeignKey("SendMailId");
-
-                    b.Navigation("SendMail");
                 });
 #pragma warning restore 612, 618
         }

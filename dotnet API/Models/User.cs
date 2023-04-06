@@ -19,6 +19,5 @@ namespace dotnet_API.Models
         public string Email { get; set; }
         public string? BirthPlace { get; set; }
         public DateTime DataRecord { get; set; }
-        public virtual SendMail? SendMail { get; set; }
     }
 }

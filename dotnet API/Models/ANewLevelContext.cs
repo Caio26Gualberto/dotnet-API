@@ -6,9 +6,8 @@ namespace dotnet_API.Models
     {
         public virtual DbSet<Artist> Artists { get; set; }
         public virtual DbSet<User> Usuarios { get; set; }
-        public virtual DbSet<SendMail> SendMails { get; set; }
         public ANewLevelContext(DbContextOptions<ANewLevelContext> options) : base(options)
         {
-        }     
+        }
     }
 }

@@ -17,22 +17,24 @@ namespace dotnet_API.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly UserService UserService;
-        private readonly ANewLevelContext NewLevelContext;
-        private readonly UserRepository UserRepository;
-        private readonly SendMail SendMail;
+        private readonly EmailService EmailService;
+        private readonly ANewLevelContext Context;
+        private readonly UserRepository _userRepository;
 
-        public UsuarioController(UserService usuario, ANewLevelContext context, UserRepository usuarioRepository, SendMail sendMail)
+        private readonly EnvironmentVariable EVariable;
+
+        public UsuarioController(UserService usuario, ANewLevelContext context, UserRepository usuarioRepository, EmailService emailService)
         {
             UserService = usuario;
-            NewLevelContext = context;
-            UserRepository = usuarioRepository;
-            SendMail = sendMail;
+            Context = context;
+            _userRepository = usuarioRepository;
+            EmailService = emailService;
         }
 
         [HttpPost("/Register")]
         public async Task<IActionResult> CreateUser(CreateUserDto input)
-        {            
-            var isExistentAccount = UserRepository.GetAll()
+        {
+            var isExistentAccount = _userRepository.GetAll()
                 .Any(x => x.Email == input.Email || x.Login == input.Login);
 
             if (isExistentAccount)
@@ -43,7 +45,7 @@ namespace dotnet_API.Controllers
 
             usuario.Name = input.Name;
             usuario.PasswordHash = passwordHash;
-            usuario.PasswordSalt = passwordSalt; 
+            usuario.PasswordSalt = passwordSalt;
             usuario.Email = input.Email;
             usuario.BirthPlace = input.BirthPlace;
             usuario.Login = input.Login;
@@ -63,7 +65,7 @@ namespace dotnet_API.Controllers
             }
         }
 
-        private bool IsVerifyPasswordHash (string password, byte[] passwordHash, byte[] passwordSalt)
+        private bool IsVerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512(passwordSalt))
             {
@@ -80,7 +82,7 @@ namespace dotnet_API.Controllers
                 new Claim(ClaimTypes.SerialNumber, user.Password)
             };
 
-            var takeSecretKey = Environment.GetEnvironmentVariable("SecretKey");
+            var takeSecretKey = EVariable.JWTApiToken;
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(takeSecretKey));
             var credential = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
             var token = new JwtSecurityToken(
@@ -95,13 +97,13 @@ namespace dotnet_API.Controllers
         [HttpPost("/Login")]
         public async Task<ActionResult<string>> Login(CreateUserDto input)
         {
-            var isNotAUser = UserRepository.GetAll()
+            var isNotAUser = _userRepository.GetAll()
                 .Any(x => x.Email != input.Email || x.Login != input.Login);
 
             if (isNotAUser)
                 return BadRequest("Usuário não encontrado");
 
-            var usuario = UserRepository.GetAll()
+            var usuario = _userRepository.GetAll()
                 .Where(x => x.Email == input.Email || x.Login == input.Login)
                 .FirstOrDefault();
 
@@ -115,30 +117,28 @@ namespace dotnet_API.Controllers
         [HttpPost("/Delete")]
         public async Task<IActionResult> DeleteUser(DeleteUserDto input)
         {
-            var user = NewLevelContext.Usuarios.FirstOrDefault(x => x.Id == input.Id);
+            var user = Context.Usuarios.FirstOrDefault(x => x.Id == input.Id);
             if (user != null)
                 UserService.DeleteUser(user);
             else
             {
                 return NotFound("Não foi possível encontrar o usuário");
             }
-
-
             return Ok();
         }
 
         [HttpPost("/UpdateUser")]
         public async Task<IActionResult> UpdateUser(UpdateUserDto input)
         {
-            var user = NewLevelContext.Usuarios.FirstOrDefault(x => x.Id == input.Id);
+            var user = Context.Usuarios.FirstOrDefault(x => x.Id == input.Id);
             if (user != null)
             {
                 user.Email = input.Email;
                 user.BirthPlace = input.LocalNascimento;
                 user.Name = input.Nome;
 
-                NewLevelContext.Usuarios.Update(user);
-                NewLevelContext.SaveChanges();
+                Context.Usuarios.Update(user);
+                Context.SaveChanges();
             }
             return Ok();
         }
@@ -146,7 +146,7 @@ namespace dotnet_API.Controllers
         [HttpGet("/GetUserById")]
         public async Task<IActionResult> GetUserById(int userId)
         {
-            var usuario = UserRepository.GetAll()
+            var usuario = _userRepository.GetAll()
                 .Where(x => x.Id == userId);
 
             return Ok(usuario);
@@ -155,15 +155,13 @@ namespace dotnet_API.Controllers
         [HttpPost("/ForgottenPassword")]
         public async Task<IActionResult> ResetPassword(int userId)
         {
-            var userMail = UserRepository.GetAll()
+            var userMail = _userRepository.GetAll()
                 .Where(x => x.Id == userId)
+                .Select(x => x.Email)
                 .FirstOrDefault();
 
-            SendMail email = new SendMail();
-            var responseEmailBodyMessage = SendMail.SendEmail(userMail.Email, NewLevelContext);
+            await EmailService.SendResetPasswordEmail(userMail);
 
-            email.Body = await responseEmailBodyMessage;
-            NewLevelContext.SendMails.Add(email);
             return Ok();
         }
     }

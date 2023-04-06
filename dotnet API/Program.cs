@@ -16,11 +16,10 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("MainDb")));
 
 //Todo aprender nova forma de simplificar e organizar as injeções de dependências
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<Artist>();
 builder.Services.AddScoped<UsuarioController>();
-builder.Services.AddScoped</*IUsuarioRepository,*/ UserRepository>();
-builder.Services.AddScoped<SendGridMail>();
-builder.Services.AddScoped</*ISendMail,*/ SendMail>();
+builder.Services.AddScoped<UserRepository>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
