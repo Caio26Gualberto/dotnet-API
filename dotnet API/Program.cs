@@ -1,18 +1,31 @@
 using dotnet_API.Controllers;
-using dotnet_API.Enumerables;
-using dotnet_API.Interfaces;
 using dotnet_API.Models;
 using dotnet_API.Repositories;
 using dotnet_API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SendGrid;
-using System;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<ANewLevelContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("MainDb")));
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("SecretKey"))),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+    };
+});
+builder.Services.AddAuthorization();
 
 //Todo aprender nova forma de simplificar e organizar as injeções de dependências
 builder.Services.AddScoped<UserService>();
@@ -36,6 +49,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

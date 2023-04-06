@@ -4,6 +4,7 @@ using dotnet_API.Repositories;
 using dotnet_API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -28,7 +29,7 @@ namespace dotnet_API.Controllers
             UserRepository = usuarioRepository;
             SendMail = sendMail;
         }
-
+        [AllowAnonymous]
         [HttpPost("/Register")]
         public async Task<IActionResult> CreateUser(CreateUserDto input)
         {            
@@ -93,25 +94,20 @@ namespace dotnet_API.Controllers
         }
 
         [HttpPost("/Login")]
-        public async Task<ActionResult<string>> Login(CreateUserDto input)
+        public async Task<ActionResult<string>> Login(LoginDto input)
         {
-            var isNotAUser = UserRepository.GetAll()
-                .Any(x => x.Email != input.Email || x.Login != input.Login);
+            var loginUser = await UserRepository.GetAll().Where(x => x.Login == input.Login && x.Password == input.Password).FirstOrDefaultAsync();
 
-            if (isNotAUser)
-                return BadRequest("Usuário não encontrado");
+            if (loginUser == null)
+                return BadRequest("Usuário não encontrado");         
 
-            var usuario = UserRepository.GetAll()
-                .Where(x => x.Email == input.Email || x.Login == input.Login)
-                .FirstOrDefault();
-
-            if (!IsVerifyPasswordHash(input.Password, usuario.PasswordHash, usuario.PasswordSalt))
+            if (!IsVerifyPasswordHash(input.Password, loginUser.PasswordHash, loginUser.PasswordSalt))
                 return BadRequest("Senha incorreta!");
 
-            string token = CreateToken(usuario);
-            return Ok("OKOKO");
+            string token = CreateToken(loginUser);
+            return Ok(token);
         }
-
+        [Authorize]
         [HttpPost("/Delete")]
         public async Task<IActionResult> DeleteUser(DeleteUserDto input)
         {
@@ -126,7 +122,7 @@ namespace dotnet_API.Controllers
 
             return Ok();
         }
-
+        [Authorize]
         [HttpPost("/UpdateUser")]
         public async Task<IActionResult> UpdateUser(UpdateUserDto input)
         {
@@ -151,7 +147,7 @@ namespace dotnet_API.Controllers
 
             return Ok(usuario);
         }
-
+        [AllowAnonymous]
         [HttpPost("/ForgottenPassword")]
         public async Task<IActionResult> ResetPassword(int userId)
         {
