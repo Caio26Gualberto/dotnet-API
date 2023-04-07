@@ -29,11 +29,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 builder.Services.AddAuthorization();
 
 //Todo aprender nova forma de simplificar e organizar as injeções de dependências
-builder.Services.AddScoped<IUserService,UserService>();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IEmailService,EmailService>();
+builder.Services.AddScoped<IArtistService,ArtistService>();
 builder.Services.AddScoped<Artist>();
 builder.Services.AddScoped<UsuarioController>();
+builder.Services.AddScoped<ArtistController>();
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<ArtistRepository>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
