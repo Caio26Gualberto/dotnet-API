@@ -2,7 +2,7 @@
 
 namespace dotnet_API.Interfaces
 {
-    public interface IUsuarioRepository : IRepository<User>
+    public interface IUserRepository : IRepository<User>
     {
         public IQueryable<User> GetAll();
     }

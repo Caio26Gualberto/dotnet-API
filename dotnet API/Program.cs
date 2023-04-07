@@ -1,4 +1,5 @@
 using dotnet_API.Controllers;
+using dotnet_API.Interfaces;
 using dotnet_API.Models;
 using dotnet_API.Repositories;
 using dotnet_API.Services;
@@ -28,8 +29,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 builder.Services.AddAuthorization();
 
 //Todo aprender nova forma de simplificar e organizar as injeções de dependências
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<IUserService,UserService>();
+builder.Services.AddScoped<IEmailService,EmailService>();
 builder.Services.AddScoped<Artist>();
 builder.Services.AddScoped<UsuarioController>();
 builder.Services.AddScoped<UserRepository>();

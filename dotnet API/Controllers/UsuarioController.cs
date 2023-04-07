@@ -1,4 +1,5 @@
 ﻿using dotnet_API.Dtos;
+using dotnet_API.Interfaces;
 using dotnet_API.Models;
 using dotnet_API.Repositories;
 using dotnet_API.Services;
@@ -17,20 +18,19 @@ namespace dotnet_API.Controllers
     [ApiController]
     public class UsuarioController : ControllerBase
     {
-        private readonly UserService UserService;
-        private readonly EmailService EmailService;
-        private readonly ANewLevelContext Context;
+        private readonly IUserService _userService;
+        private readonly IEmailService _emailService;
         private readonly UserRepository _userRepository;
 
         private readonly EnvironmentVariable EVariable;
 
-        public UsuarioController(UserService usuario, ANewLevelContext context, UserRepository usuarioRepository, EmailService emailService)
+        public UsuarioController(UserService usuario, UserRepository usuarioRepository, IEmailService emailService)
         {
-            UserService = usuario;
-            Context = context;
+            _userService = usuario;
             _userRepository = usuarioRepository;
-            EmailService = emailService;
+            _emailService = emailService;
         }
+
         [AllowAnonymous]
         [HttpPost("/Register")]
         public async Task<IActionResult> CreateUser(CreateUserDto input)
@@ -52,7 +52,7 @@ namespace dotnet_API.Controllers
             usuario.Login = input.Login;
             usuario.Password = input.Password;
 
-            UserService.CreateUser(usuario);
+            _userService.CreateUser(usuario);
 
             return Ok(usuario);
         }
@@ -98,7 +98,7 @@ namespace dotnet_API.Controllers
         [HttpPost("/Login")]
         public async Task<ActionResult<string>> Login(LoginDto input)
         {
-            var loginUser = await UserRepository.GetAll().Where(x => x.Login == input.Login && x.Password == input.Password).FirstOrDefaultAsync();
+            var loginUser = await _userRepository.GetAll().Where(x => x.Login == input.Login && x.Password == input.Password).FirstOrDefaultAsync();
 
             if (loginUser == null)
                 return BadRequest("Usuário não encontrado");         
@@ -113,9 +113,10 @@ namespace dotnet_API.Controllers
         [HttpPost("/Delete")]
         public async Task<IActionResult> DeleteUser(DeleteUserDto input)
         {
-            var user = Context.Usuarios.FirstOrDefault(x => x.Id == input.Id);
+            var user = _userRepository.GetAll().FirstOrDefault(x => x.Id == input.Id);
+
             if (user != null)
-                UserService.DeleteUser(user);
+                _userService.DeleteUser(user);
             else
             {
                 return NotFound("Não foi possível encontrar o usuário");
@@ -126,15 +127,15 @@ namespace dotnet_API.Controllers
         [HttpPost("/UpdateUser")]
         public async Task<IActionResult> UpdateUser(UpdateUserDto input)
         {
-            var user = Context.Usuarios.FirstOrDefault(x => x.Id == input.Id);
+            var user = _userRepository.GetAll().FirstOrDefault(x => x.Id == input.Id);
+
             if (user != null)
             {
                 user.Email = input.Email;
                 user.BirthPlace = input.LocalNascimento;
                 user.Name = input.Nome;
 
-                Context.Usuarios.Update(user);
-                Context.SaveChanges();
+                _userService.UpdateUser(user);
             }
             return Ok();
         }
@@ -156,7 +157,7 @@ namespace dotnet_API.Controllers
                 .Select(x => x.Email)
                 .FirstOrDefault();
 
-            await EmailService.SendResetPasswordEmail(userMail);
+            await _emailService.SendResetPasswordEmail(userMail);
 
             return Ok();
         }

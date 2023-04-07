@@ -3,17 +3,16 @@ using dotnet_API.Models;
 
 namespace dotnet_API.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class ArtistRepository : IArtistRepository
     {
         private readonly ANewLevelContext _context;
-
-        public UserRepository(ANewLevelContext context)
-        {
+        public ArtistRepository(ANewLevelContext context) 
+        { 
             _context = context;
         }
-        public IQueryable<User> GetAll()
+        public IQueryable<Artist> GetAll()
         {
-            return _context.Usuarios.Where(x => true);
+           return _context.Artists.Where(x => true);
         }
     }
 }
