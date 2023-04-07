@@ -21,20 +21,10 @@ namespace dotnet_API.Controllers
         }
 
         [HttpPost("/GetArtist")]
-        public async Task<ActionResult<JObject>> GetArtist(string input)
+        public async Task<ActionResult<string>> GetArtist(string input)
         {
-            var artistName = input.ToLower().RemoveDiacritics();
-
-            var weHaveThisArtist = _artistRepository.GetAll()
-                .Any(x => x.Name == artistName);
-
-            if (weHaveThisArtist)
-                return Ok();
-
-            var flurlClient = new FlurlClient();
-            var response = await flurlClient.Request($"https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist={input}&api_key=cd8ca4bac789ae2dae3dfeb568bf2df5&format=json").GetJsonAsync<JObject>();
-
-            return response;   
+           var a = _artistService.SearchArtist("Slayer", "f9968a478d0249bc820ba9635b7efc70");
+            return await a;
         }
     }
 }
