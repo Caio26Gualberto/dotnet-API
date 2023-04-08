@@ -1,10 +1,6 @@
-﻿using dotnet_API.Extensions;
-using dotnet_API.Interfaces;
-using dotnet_API.Models;
+﻿using dotnet_API.Interfaces;
 using dotnet_API.Repositories;
-using Flurl.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 
 namespace dotnet_API.Controllers
 {

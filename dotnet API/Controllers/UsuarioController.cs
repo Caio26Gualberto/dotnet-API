@@ -20,11 +20,11 @@ namespace dotnet_API.Controllers
     {
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
-        private readonly UserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
 
         private readonly EnvironmentVariable EVariable;
 
-        public UsuarioController(UserService usuario, UserRepository usuarioRepository, IEmailService emailService)
+        public UsuarioController(UserService usuario, IUserRepository usuarioRepository, IEmailService emailService)
         {
             _userService = usuario;
             _userRepository = usuarioRepository;
@@ -143,8 +143,7 @@ namespace dotnet_API.Controllers
         [HttpGet("/GetUserById")]
         public async Task<IActionResult> GetUserById(int userId)
         {
-            var usuario = _userRepository.GetAll()
-                .Where(x => x.Id == userId);
+            var usuario = await _userRepository.GetAll().FirstOrDefaultAsync(x => x.Id == userId);    
 
             return Ok(usuario);
         }

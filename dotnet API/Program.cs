@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SendGrid;
+using System.Reflection.Metadata;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,13 +31,11 @@ builder.Services.AddAuthorization();
 
 //Todo aprender nova forma de simplificar e organizar as injeções de dependências
 builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<SpotifyServiceApi>();
+builder.Services.AddScoped<SpotifyService>();
 builder.Services.AddScoped<IEmailService,EmailService>();
 builder.Services.AddScoped<IArtistService,ArtistService>();
 builder.Services.AddScoped<Artist>();
-builder.Services.AddScoped<UsuarioController>();
-builder.Services.AddScoped<ArtistController>();
-builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<IUserRepository ,UserRepository>();
 builder.Services.AddScoped<ArtistRepository>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
