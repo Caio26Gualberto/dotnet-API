@@ -17,10 +17,10 @@ namespace dotnet_API.Controllers
         }
 
         [HttpPost("/GetArtist")]
-        public async Task<ActionResult<string>> GetArtist(string input)
+        public async Task<ActionResult<string>> GetArtist(string artistName)
         {
-           var a = _artistService.SearchArtist("Slayer", "f9968a478d0249bc820ba9635b7efc70");
-            return await a;
+           var artist = _artistService.SearchArtist(artistName);
+            return await artist;
         }
     }
 }

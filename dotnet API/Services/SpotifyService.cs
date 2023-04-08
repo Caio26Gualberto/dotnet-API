@@ -1,14 +1,21 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using dotnet_API.Models;
+using Newtonsoft.Json.Linq;
+using System.Drawing;
 using System.Text;
 
 namespace dotnet_API.Services
 {
     public class SpotifyService
     {
-        public async Task<string> GetAccessTokenSpotify(string clientId, string clientSecret)
+        private readonly EnvironmentVariable _environment;
+        public SpotifyService()
+        {
+
+        }
+        public async Task<string> GetAccessTokenSpotify()
         {
             HttpClient client = new HttpClient();
-            string encodedAuth = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{"f9968a478d0249bc820ba9635b7efc70"}:{"ad174073a0c04cba9b1227becb3500fc"}"));
+            string encodedAuth = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_environment.SpotifyClientId}:{_environment.SpotifySecretId}"));
             client.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", encodedAuth);
 
@@ -25,16 +32,26 @@ namespace dotnet_API.Services
             string accessToken = result.GetValue("access_token").ToString();
             return accessToken;
         }
-        public async Task<string> SearchArtist(string artistName, string accessToken)
+        public async Task<string> SearchArtist(string artistName, string? accesToken)
         {
+            var token = string.Empty;
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "BQB19UFNHEQzkqyMmoV_tdXnz5uF4Tv7cZxeSeUAgxXXrjGZhTJ6UFythdYKk7zAxvtXqKep49EOpKgQP3YjeB87c-UiwjFPiGVS6pLaJZAHRzu1vNG1jZUrv33vXJnB7w_L");
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accesToken);
 
             string url = $"https://api.spotify.com/v1/search?q={artistName}&type=artist";
             HttpResponseMessage response = await client.GetAsync(url);
+            string responsebody = await response.Content.ReadAsStringAsync();
 
             string responseString = await response.Content.ReadAsStringAsync();
+
+            if (responsebody.Contains("Only valid bearer authentication supported"))
+            {
+                token = await GetAccessTokenSpotify();
+                var artistInfo = await SearchArtist(artistName, token);
+                return artistInfo;
+            }
+
             return responseString;
         }
     }

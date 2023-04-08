@@ -7,6 +7,6 @@ namespace dotnet_API.Interfaces
         public void CreateUser(User input);
         public void DeleteUser(User user);
         public void UpdateUser(User input);
-        public Task<string> SearchArtist(string artistName, string accessToken);
+        public Task<string> SearchArtist(string artistName);
     }
 }

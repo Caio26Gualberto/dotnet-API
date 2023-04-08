@@ -25,11 +25,10 @@ namespace dotnet_API.Services
             throw new NotImplementedException();
         }
 
-        public async Task<string> SearchArtist(string artistName, string accessToken)
+        public async Task<string> SearchArtist(string artistName)
         {
-            _spotify.GetAccessTokenSpotify("sa", "sas");
-            var a = _spotify.SearchArtist("Slayer", "f9968a478d0249bc820ba9635b7efc70");
-            return await a;
+            var artist = await _spotify.SearchArtist(artistName, null);
+            return artist;
         }
     }
 }
