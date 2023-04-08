@@ -32,6 +32,7 @@ builder.Services.AddAuthorization();
 //Todo aprender nova forma de simplificar e organizar as injeções de dependências
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<SpotifyService>();
+builder.Services.AddScoped<EnvironmentVariable>();
 builder.Services.AddScoped<IEmailService,EmailService>();
 builder.Services.AddScoped<IArtistService,ArtistService>();
 builder.Services.AddScoped<Artist>();

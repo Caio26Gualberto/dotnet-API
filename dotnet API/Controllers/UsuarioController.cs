@@ -22,13 +22,15 @@ namespace dotnet_API.Controllers
         private readonly IEmailService _emailService;
         private readonly IUserRepository _userRepository;
 
-        private readonly EnvironmentVariable EVariable;
+        private readonly EnvironmentVariable _environment;
 
-        public UsuarioController(UserService usuario, IUserRepository usuarioRepository, IEmailService emailService)
+        public UsuarioController(UserService usuario, IUserRepository usuarioRepository, IEmailService emailService, EnvironmentVariable environmentVariable)
         {
             _userService = usuario;
             _userRepository = usuarioRepository;
             _emailService = emailService;
+            _environment = environmentVariable;
+            
         }
 
         [AllowAnonymous]
@@ -83,7 +85,7 @@ namespace dotnet_API.Controllers
                 new Claim(ClaimTypes.SerialNumber, user.Password)
             };
 
-            var takeSecretKey = EVariable.JWTApiToken;
+            var takeSecretKey = _environment.JWTApiToken;
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(takeSecretKey));
             var credential = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
             var token = new JwtSecurityToken(
