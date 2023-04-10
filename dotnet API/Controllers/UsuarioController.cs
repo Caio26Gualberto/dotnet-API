@@ -67,7 +67,6 @@ namespace dotnet_API.Controllers
                 passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
             }
         }
-
         private bool IsVerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512(passwordSalt))
@@ -158,7 +157,7 @@ namespace dotnet_API.Controllers
                 .Select(x => x.Email)
                 .FirstOrDefault();
 
-            await _emailService.SendResetPasswordEmail(userMail);
+            await _emailService.SendMailAsync(userMail);
 
             return Ok();
         }

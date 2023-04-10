@@ -24,5 +24,11 @@ namespace dotnet_API.Extensions
                 .ToString()
                 .Normalize(NormalizationForm.FormC);
         }
+
+        public static string FriendlyEmailName(this string email)
+        {
+            string[] c = email.Split("@");
+            return c[0];
+        }
     }
 }
