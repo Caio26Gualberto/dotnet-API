@@ -16,7 +16,7 @@ namespace dotnet_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsuarioController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
@@ -24,18 +24,18 @@ namespace dotnet_API.Controllers
 
         private readonly EnvironmentVariable _environment;
 
-        public UsuarioController(UserService usuario, IUserRepository usuarioRepository, IEmailService emailService, EnvironmentVariable environmentVariable)
+        public UserController(UserService usuario, IUserRepository usuarioRepository, IEmailService emailService, EnvironmentVariable environmentVariable)
         {
             _userService = usuario;
             _userRepository = usuarioRepository;
             _emailService = emailService;
             _environment = environmentVariable;
-            
+
         }
 
         [AllowAnonymous]
         [HttpPost("/Register")]
-        public async Task<IActionResult> CreateUser(CreateUserDto input)
+        public async Task<IActionResult> Register(CreateUserDto input)
         {
             var isExistentAccount = _userRepository.GetAll()
                 .Any(x => x.Email == input.Email || x.Login == input.Login);
@@ -43,30 +43,12 @@ namespace dotnet_API.Controllers
             if (isExistentAccount)
                 return BadRequest("Credencias já existentes em nosso sistema");
 
-            User usuario = new User();
-            CreatePasswordHash(input.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            var user = await _userService.CreateAccount(input);
 
-            usuario.Name = input.Name;
-            usuario.PasswordHash = passwordHash;
-            usuario.PasswordSalt = passwordSalt;
-            usuario.Email = input.Email;
-            usuario.BirthPlace = input.BirthPlace;
-            usuario.Login = input.Login;
-            usuario.Password = input.Password;
-
-            _userService.CreateUser(usuario);
-
-            return Ok(usuario);
+            return Ok(user);
         }
 
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-            }
-        }
+
         private bool IsVerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512(passwordSalt))
@@ -76,25 +58,7 @@ namespace dotnet_API.Controllers
             }
         }
 
-        private string CreateToken(User user)
-        {
-            List<Claim> claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Login),
-                new Claim(ClaimTypes.SerialNumber, user.Password)
-            };
 
-            var takeSecretKey = _environment.JWTApiToken;
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(takeSecretKey));
-            var credential = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: credential);
-
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-            return jwt;
-        }
 
         [HttpPost("/Login")]
         public async Task<ActionResult<string>> Login(LoginDto input)
@@ -102,12 +66,12 @@ namespace dotnet_API.Controllers
             var loginUser = await _userRepository.GetAll().Where(x => x.Login == input.Login && x.Password == input.Password).FirstOrDefaultAsync();
 
             if (loginUser == null)
-                return BadRequest("Usuário não encontrado");         
+                return BadRequest("Usuário não encontrado");
 
             if (!IsVerifyPasswordHash(input.Password, loginUser.PasswordHash, loginUser.PasswordSalt))
                 return BadRequest("Senha incorreta!");
 
-            string token = CreateToken(loginUser);
+            string token = await _userService.CreateToken(loginUser);
             return Ok(token);
         }
         [Authorize]
@@ -144,20 +108,23 @@ namespace dotnet_API.Controllers
         [HttpGet("/GetUserById")]
         public async Task<IActionResult> GetUserById(int userId)
         {
-            var usuario = await _userRepository.GetAll().FirstOrDefaultAsync(x => x.Id == userId);    
+            var usuario = await _userRepository.GetAll().FirstOrDefaultAsync(x => x.Id == userId);
 
             return Ok(usuario);
         }
+
         [AllowAnonymous]
         [HttpPost("/ForgottenPassword")]
-        public async Task<IActionResult> ResetPassword(int userId)
+        public async Task<IActionResult> ResetPassword(string email)
         {
-            var userMail = _userRepository.GetAll()
-                .Where(x => x.Id == userId)
-                .Select(x => x.Email)
+            var user = _userRepository.GetAll()
+                .Where(x => x.Email == email)
                 .FirstOrDefault();
 
-            await _emailService.SendMailAsync(userMail);
+            if (user == null)
+                return BadRequest("Não existe este email em nossa base de dados");
+
+            await _emailService.SendMailAsync(user.Email);
 
             return Ok();
         }
