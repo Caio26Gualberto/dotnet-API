@@ -1,14 +1,10 @@
 ﻿using dotnet_API.Dtos;
 using dotnet_API.Interfaces;
 using dotnet_API.Models;
-using dotnet_API.Repositories;
 using dotnet_API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -21,20 +17,18 @@ namespace dotnet_API.Controllers
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
         private readonly IUserRepository _userRepository;
-
         private readonly EnvironmentVariable _environment;
 
-        public UserController(UserService usuario, IUserRepository usuarioRepository, IEmailService emailService, EnvironmentVariable environmentVariable)
+        public UserController(UserService userService, IUserRepository userRepository, IEmailService emailService, EnvironmentVariable environment)
         {
-            _userService = usuario;
-            _userRepository = usuarioRepository;
+            _userService = userService;
+            _userRepository = userRepository;
             _emailService = emailService;
-            _environment = environmentVariable;
-
+            _environment = environment;   
         }
 
         [AllowAnonymous]
-        [HttpPost("/Register")]
+        [HttpPost("Register")]
         public async Task<IActionResult> Register(CreateUserDto input)
         {
             var isExistentAccount = _userRepository.GetAll()
@@ -60,7 +54,7 @@ namespace dotnet_API.Controllers
 
 
 
-        [HttpPost("/Login")]
+        [HttpPost("Login")]
         public async Task<ActionResult<string>> Login(LoginDto input)
         {
             var loginUser = await _userRepository.GetAll().Where(x => x.Login == input.Login && x.Password == input.Password).FirstOrDefaultAsync();
@@ -75,7 +69,7 @@ namespace dotnet_API.Controllers
             return Ok(token);
         }
         [Authorize]
-        [HttpPost("/Delete")]
+        [HttpPost("Delete")]
         public async Task<IActionResult> DeleteUser(DeleteUserDto input)
         {
             var user = _userRepository.GetAll().FirstOrDefault(x => x.Id == input.Id);
@@ -89,7 +83,7 @@ namespace dotnet_API.Controllers
             return Ok();
         }
         [Authorize]
-        [HttpPost("/UpdateUser")]
+        [HttpPost("UpdateUser")]
         public async Task<IActionResult> UpdateUser(UpdateUserDto input)
         {
             var user = _userRepository.GetAll().FirstOrDefault(x => x.Id == input.Id);
@@ -105,7 +99,7 @@ namespace dotnet_API.Controllers
             return Ok();
         }
 
-        [HttpGet("/GetUserById")]
+        [HttpGet("GetUserById")]
         public async Task<IActionResult> GetUserById(int userId)
         {
             var usuario = await _userRepository.GetAll().FirstOrDefaultAsync(x => x.Id == userId);
@@ -114,8 +108,8 @@ namespace dotnet_API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("/ForgottenPassword")]
-        public async Task<IActionResult> ResetPassword(string email)
+        [HttpPost("ForgottenPassword")]
+        public async Task<IActionResult> ForgotPassword(string email)
         {
             var user = _userRepository.GetAll()
                 .Where(x => x.Email == email)
@@ -124,9 +118,24 @@ namespace dotnet_API.Controllers
             if (user == null)
                 return BadRequest("Não existe este email em nossa base de dados");
 
-            await _emailService.SendMailAsync(user.Email);
+            var token = await _emailService.CreateToken(user, _environment);
+            var uri = GenerateURIPassword(token);
+            await _emailService.SendMailAsync(user.Email, uri);
 
             return Ok();
+        }
+
+        [HttpGet("LinkPassword")]
+        public async Task<IActionResult> ResetPassword(string Bearer)
+        {
+
+            return Ok("Bateu");
+        }
+
+        private string GenerateURIPassword(string token)
+        {
+            var link = Url.Action((nameof(ResetPassword)), "User", new { Bearer = token }, Request.Scheme);
+            return link;
         }
     }
 }
