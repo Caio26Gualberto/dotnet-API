@@ -5,8 +5,11 @@ using dotnet_API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 
 namespace dotnet_API.Controllers
 {
@@ -125,16 +128,40 @@ namespace dotnet_API.Controllers
             return Ok();
         }
 
-        [HttpGet("LinkPassword")]
-        public async Task<IActionResult> ResetPassword(string Bearer)
+        [HttpGet("ConfirmToken")]
+        public async Task<IActionResult> ConfirmResetPasswordToken(string Bearer)
         {
+            var handler = new JwtSecurityTokenHandler();
+            var token = handler.ReadJwtToken(Bearer);
+            var email = token.Claims.FirstOrDefault(claim => claim.Type == "email")?.Value;
 
-            return Ok("Bateu");
+            var isValidEmail = _userRepository.GetAll()
+                .Any(x => x.Email == email);
+
+            if (!isValidEmail)
+                return BadRequest("Email inválido");
+
+            string emailCodificado = HttpUtility.UrlEncode(email);
+            string urlDeRedirecionamento = "https://localhost:7213/api/User/RecoverAccount?email=" + emailCodificado;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlDeRedirecionamento);
+            request.Method = "POST";
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            response.Close();
+
+            return Ok();
+        }
+
+        [HttpPost("RecoverAccount")]
+        public async Task<IActionResult> RecoverAccount(string email)
+        {
+            //var descryptoEmail = 
+            return Ok();
         }
 
         private string GenerateURIPassword(string token)
         {
-            var link = Url.Action((nameof(ResetPassword)), "User", new { Bearer = token }, Request.Scheme);
+            var link = Url.Action((nameof(ConfirmResetPasswordToken)), "User", new { Bearer = token }, Request.Scheme);
             return link;
         }
     }
