@@ -105,7 +105,7 @@ namespace dotnet_API.Controllers
         [HttpGet("GetUserById")]
         public async Task<IActionResult> GetUserById(int userId)
         {
-            var usuario = await _userRepository.GetAll().FirstOrDefaultAsync(x => x.Id == userId);
+            var usuario = _userRepository.GetAll().FirstOrDefault(x => x.Id == userId);
 
             return Ok(usuario);
         }
@@ -116,7 +116,7 @@ namespace dotnet_API.Controllers
         {
             var user = _userRepository.GetAll()
                 .Where(x => x.Email == email)
-                .FirstOrDefault();
+                .FirstOrDefault();  
 
             if (user == null)
                 return BadRequest("Não existe este email em nossa base de dados");
