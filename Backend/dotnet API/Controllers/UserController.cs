@@ -128,12 +128,12 @@ namespace dotnet_API.Controllers
             return Ok();
         }
 
-        [HttpGet("ConfirmToken")]
-        public async Task<IActionResult> ConfirmResetPasswordToken(string Bearer)
+        [HttpGet("ValidatePasswordToken")]
+        public async Task<IActionResult> ValidatePasswordToken(string Bearer)
         {
             var handler = new JwtSecurityTokenHandler();
             var token = handler.ReadJwtToken(Bearer);
-            var email = token.Claims.FirstOrDefault(claim => claim.Type == "email")?.Value;
+            var email = token.Claims.FirstOrDefault(claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
 
             var isValidEmail = _userRepository.GetAll()
                 .Any(x => x.Email == email);
@@ -141,27 +141,25 @@ namespace dotnet_API.Controllers
             if (!isValidEmail)
                 return BadRequest("Email inválido");
 
-            string emailCodificado = HttpUtility.UrlEncode(email);
-            string urlDeRedirecionamento = "https://localhost:7213/api/User/RecoverAccount?email=" + emailCodificado;
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlDeRedirecionamento);
-            request.Method = "POST";
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            response.Close();
-
+            _userService.GenerateURI(email);
+        
             return Ok();
         }
 
         [HttpPost("RecoverAccount")]
-        public async Task<IActionResult> RecoverAccount(string email)
+        public async Task<IActionResult> RecoverAccount([FromQuery] string email)
         {
-            //var descryptoEmail = 
+            var userFromEmail = _userRepository.GetAll()
+                .Where(x => x.Email == email)
+                .FirstOrDefault();
+
+            string parametroDoUsuario = Request.Form["parametroDoUsuario"];
             return Ok();
         }
 
         private string GenerateURIPassword(string token)
         {
-            var link = Url.Action((nameof(ConfirmResetPasswordToken)), "User", new { Bearer = token }, Request.Scheme);
+            var link = Url.Action((nameof(ValidatePasswordToken)), "User", new { Bearer = token }, Request.Scheme);
             return link;
         }
     }

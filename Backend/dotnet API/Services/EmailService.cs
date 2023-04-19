@@ -1,13 +1,12 @@
-﻿using dotnet_API.Models;
+﻿using dotnet_API.Extensions;
 using dotnet_API.Interfaces;
-using SendGrid.Helpers.Mail;
-using SendGrid;
-using dotnet_API.Extensions;
+using dotnet_API.Models;
 using Microsoft.IdentityModel.Tokens;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_API.Services
 {

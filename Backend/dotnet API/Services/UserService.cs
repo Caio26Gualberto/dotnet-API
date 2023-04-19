@@ -3,9 +3,11 @@ using dotnet_API.Interfaces;
 using dotnet_API.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 
 namespace dotnet_API.Services
 {
@@ -87,6 +89,17 @@ namespace dotnet_API.Services
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
+        }
+
+        public void GenerateURI(string email)
+        {
+            string emailCodificado = HttpUtility.UrlEncode(email);
+            string urlDeRedirecionamento = "https://localhost:7213/api/User/RecoverAccount?email=" + emailCodificado;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlDeRedirecionamento);
+            request.Method = "POST";
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            response.Close();
         }
     }
 }
