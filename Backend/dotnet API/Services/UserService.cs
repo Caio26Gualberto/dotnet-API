@@ -101,5 +101,16 @@ namespace dotnet_API.Services
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             response.Close();
         }
+
+        public void GenerateNewPassword(User user, string password)
+        {
+            CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            user.Password = password;
+            user.PasswordSalt = passwordSalt;
+            user.PasswordHash = passwordHash;
+            _context.Usuarios.Update(user);
+            _context.SaveChanges(); 
+        }
     }
 }

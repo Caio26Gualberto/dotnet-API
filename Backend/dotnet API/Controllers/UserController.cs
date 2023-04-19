@@ -55,8 +55,6 @@ namespace dotnet_API.Controllers
             }
         }
 
-
-
         [HttpPost("Login")]
         public async Task<ActionResult<string>> Login(LoginDto input)
         {
@@ -128,7 +126,7 @@ namespace dotnet_API.Controllers
             return Ok();
         }
 
-        [HttpGet("ValidatePasswordToken")]
+        [HttpGet("ValidateEmailPasswordToken")]
         public async Task<IActionResult> ValidatePasswordToken(string Bearer)
         {
             var handler = new JwtSecurityTokenHandler();
@@ -146,15 +144,28 @@ namespace dotnet_API.Controllers
             return Ok();
         }
 
-        [HttpPost("RecoverAccount")]
+        [HttpPost("RetrievingEmailFromToken")]
         public async Task<IActionResult> RecoverAccount([FromQuery] string email)
         {
             var userFromEmail = _userRepository.GetAll()
                 .Where(x => x.Email == email)
                 .FirstOrDefault();
 
-            string parametroDoUsuario = Request.Form["parametroDoUsuario"];
             return Ok();
+        }
+
+        [HttpPost("GenerateNewPassword")]
+        public async Task<IActionResult> GenerateNewPassoword (string password, string email)
+        {
+            var user = _userRepository.GetAll()
+                .Where(x => x.Email == email)
+                .FirstOrDefault();
+
+            if(user.Password == password)
+                return BadRequest("Sua senha deve ser diferente da antiga");
+
+            _userService.GenerateNewPassword(user, password);
+            return Ok("Senha atualizada!");    
         }
 
         private string GenerateURIPassword(string token)
