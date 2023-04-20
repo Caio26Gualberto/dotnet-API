@@ -144,14 +144,14 @@ namespace dotnet_API.Controllers
             return Ok();
         }
 
-        [HttpPost("RetrievingEmailFromToken")]
+        [HttpGet("RetrievingEmailFromToken")]
         public async Task<IActionResult> RecoverAccount([FromQuery] string email)
         {
             var userFromEmail = _userRepository.GetAll()
                 .Where(x => x.Email == email)
                 .FirstOrDefault();
 
-            return Ok();
+            return Ok(email);
         }
 
         [HttpPost("GenerateNewPassword")]
