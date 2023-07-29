@@ -1,12 +1,14 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
+
 @keyframes fade-in {
 	from {
-	  opacity: 0;
+		opacity: 0;
 	}
+
 	to {
-	  opacity: 1;
+		opacity: 1;
 	}
-  }
+}
 
 * {
 	box-sizing: border-box;
@@ -16,11 +18,12 @@ body {
 	margin: 0;
 	padding: 0;
 	background: #f6f5f7;
-	background-image:url('../Images/Headbangers\ \(2\).jpg');
+	background-image: url('../Images/Headbangers\ \(2\).jpg'), url('../Images/Headbanger5.jpeg');
 	background-repeat: no-repeat;
-	background-position: left;
+	background-position: left, right;
 	background-attachment: fixed;
-	background-size: 100%;
+	background-size: 50%;
+	background-blend-mode: darken;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -28,6 +31,49 @@ body {
 	font-family: 'Montserrat', sans-serif;
 	height: 100vh;
 	margin: -20px 0 50px;
+}
+
+.errorMessage {
+	margin-top: 30px;
+	background-color: #f44336;
+	color: #ffffff;
+	padding: 10px;
+	font-size: 16px;
+	text-align: center;
+}
+
+.image-with-opacity {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.welcome {
+	position: relative;
+	color: #ffffff;
+	font-size: 24px;
+	text-align: center;
+}
+
+.welcome::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: transparent;
+	opacity: 0;
+}
+
+.image-with-opacity::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
 }
 
 h1 {

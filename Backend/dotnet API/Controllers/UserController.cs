@@ -27,7 +27,7 @@ namespace dotnet_API.Controllers
             _userService = userService;
             _userRepository = userRepository;
             _emailService = emailService;
-            _environment = environment;   
+            _environment = environment;
         }
 
         [AllowAnonymous]
@@ -42,7 +42,7 @@ namespace dotnet_API.Controllers
 
             var user = await _userService.CreateAccount(input);
 
-            return Ok(user);
+            return Ok(new { success = false, message = "Registro feito com sucesso!" });
         }
 
 
@@ -58,16 +58,18 @@ namespace dotnet_API.Controllers
         [HttpPost("Login")]
         public async Task<ActionResult<string>> Login(LoginDto input)
         {
-            var loginUser = await _userRepository.GetAll().Where(x => x.Login == input.Login && x.Password == input.Password).FirstOrDefaultAsync();
+            var loginUser = await _userRepository.GetAll()
+                .Where(x => x.Login == input.Login || x.Email == input.Login)
+                .FirstOrDefaultAsync();
 
             if (loginUser == null)
-                return BadRequest("Usuário não encontrado");
+                return BadRequest(new { success = false, message = "Usuário não encontrado" });
 
             if (!IsVerifyPasswordHash(input.Password, loginUser.PasswordHash, loginUser.PasswordSalt))
-                return BadRequest("Senha incorreta!");
+                return BadRequest(new { success = false, message = "Senha incorreta" });
 
             string token = await _userService.CreateToken(loginUser);
-            return Ok(token);
+            return Ok(new { success = true, message = "Bem-vindo!" });
         }
         [Authorize]
         [HttpPost("Delete")]
@@ -78,9 +80,8 @@ namespace dotnet_API.Controllers
             if (user != null)
                 _userService.DeleteUser(user);
             else
-            {
                 return NotFound("Não foi possível encontrar o usuário");
-            }
+
             return Ok();
         }
         [Authorize]
@@ -114,7 +115,7 @@ namespace dotnet_API.Controllers
         {
             var user = _userRepository.GetAll()
                 .Where(x => x.Email == email)
-                .FirstOrDefault();  
+                .FirstOrDefault();
 
             if (user == null)
                 return BadRequest("Não existe este email em nossa base de dados");
@@ -140,7 +141,7 @@ namespace dotnet_API.Controllers
                 return BadRequest("Email inválido");
 
             _userService.GenerateURI(email);
-        
+
             return Ok();
         }
 
@@ -155,17 +156,17 @@ namespace dotnet_API.Controllers
         }
 
         [HttpPost("GenerateNewPassword")]
-        public async Task<IActionResult> GenerateNewPassoword (string password, string email)
+        public async Task<IActionResult> GenerateNewPassoword(string password, string email)
         {
             var user = _userRepository.GetAll()
                 .Where(x => x.Email == email)
                 .FirstOrDefault();
 
-            if(user.Password == password)
+            if (user.Password == password)
                 return BadRequest("Sua senha deve ser diferente da antiga");
 
             _userService.GenerateNewPassword(user, password);
-            return Ok("Senha atualizada!");    
+            return Ok("Senha atualizada!");
         }
 
         private string GenerateURIPassword(string token)

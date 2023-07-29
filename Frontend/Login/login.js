@@ -11,41 +11,70 @@ signInButton.addEventListener('click', () => {
 });
 
 function registerUser() {
-	// Obtenha os valores dos campos de entrada
 	const email = document.getElementById('email').value;
 	const name = document.getElementById('name').value;
 	const login = document.getElementById('login').value;
 	const password = document.getElementById('password').value;
-  
-	// Construa o objeto de dados para enviar na solicitação fetch
+
 	const userData = {
-	  email: email,
-	  name: name,
-	  login: login,
-	  password: password,
-	  birthPlace: ''
+		email: email,
+		name: name,
+		login: login,
+		password: password,
+		birthPlace: ''
 	};
-  
-	// Realize a solicitação fetch para o endpoint de registro
+
 	fetch('https://localhost:7213/api/User/Register', {
-	  method: 'POST',
-	  headers: {
-		'Content-Type': 'application/json'
-	  },
-	  body: JSON.stringify(userData)
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(userData)
+	})
+		.then(response => response.json())
+		.then(data => {
+			console.log();
+			if (data.hasOwnProperty('success')) {
+				const messageElement = document.getElementById('messageRegister');
+				if (data.success) {
+					messageElement.textContent = data.message; // Mensagem de sucesso
+				} else {
+					messageElement.textContent = data.message; // Mensagem de erro
+				}
+			} else {
+				messageElement.textContent = data.message;
+			}
+		})
+}
+
+function login() {
+	const login = document.getElementById('enterLogin').value;
+	const password = document.getElementById('passwordLogin').value;
+
+	const loginData = {
+		login: login,
+		password: password
+	}
+	fetch('https://localhost:7213/api/User/Login', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(loginData)
 	})
 	.then(response => response.json())
-	.then(data => {
-		console.log();
-	  if (data.hasOwnProperty('success')) {
-      const messageElement = document.getElementById('message');
-      if (data.success) {
-        messageElement.textContent = 'Registro bem-sucedido!'; // Mensagem de sucesso
-      } else {
-        messageElement.textContent = data.message; // Mensagem de erro
-      }
-    } else {
-      messageElement.textContent =('Resposta do servidor inválida:', data);
-    }
-  })
-  }
+		.then(data => {
+			console.log();
+			if (data.hasOwnProperty('success')) {
+				const messageElement = document.getElementById('messageLogin');
+				if (data.success) {
+					messageElement.textContent = data.message; // Mensagem de sucesso
+				} else {
+					messageElement.textContent = data.message; // Mensagem de erro
+					messageElement.setAttribute('class', 'errorMessage')
+				}
+			} else {
+				messageElement.textContent = data.message;
+			}
+		})
+}
