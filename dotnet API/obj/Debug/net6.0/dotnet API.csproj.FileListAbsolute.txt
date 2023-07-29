@@ -1,0 +1,99 @@
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\appsettings.Development.json
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\appsettings.json
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\dotnet API.exe
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\dotnet API.deps.json
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\dotnet API.runtimeconfig.json
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\dotnet API.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\dotnet API.pdb
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\AngleSharp.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Azure.Core.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Azure.Identity.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Flurl.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Flurl.Http.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Humanizer.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\MailKit.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.Data.SqlClient.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.Extensions.Caching.Abstractions.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.Extensions.Caching.Memory.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.Extensions.Logging.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.Extensions.Options.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.Extensions.Primitives.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.Identity.Client.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.Identity.Client.Extensions.Msal.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.OpenApi.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.SqlServer.Server.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\MimeKit.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Mono.TextTemplating.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\BouncyCastle.Crypto.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\SendGrid.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\StarkbankEcdsa.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\System.CodeDom.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\System.Configuration.ConfigurationManager.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\System.Drawing.Common.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\System.Memory.Data.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\System.Runtime.Caching.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\System.Security.Permissions.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\System.Text.Encodings.Web.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\System.Text.Json.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\System.Windows.Extensions.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\runtimes\unix\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\dotnet API.csproj.AssemblyReference.cache
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\dotnet API.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\dotnet API.AssemblyInfoInputs.cache
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\dotnet API.AssemblyInfo.cs
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\dotnet API.csproj.CoreCompileInputs.cache
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\dotnet API.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\dotnet API.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\staticwebassets\msbuild.dotnet API.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\staticwebassets\msbuild.build.dotnet API.props
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\staticwebassets\msbuild.buildMultiTargeting.dotnet API.props
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\staticwebassets\msbuild.buildTransitive.dotnet API.props
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\staticwebassets.pack.json
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\staticwebassets.build.json
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\staticwebassets.development.json
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\scopedcss\bundle\dotnet API.styles.css
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\dotnet API.csproj.CopyComplete
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\dotnet API.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\refint\dotnet API.dll
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\dotnet API.pdb
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\dotnet API.genruntimeconfig.cache
+C:\Users\Caiog\OneDrive\Área de Trabalho\Dev\Projetos\NewLevel\dotnet API\obj\Debug\net6.0\ref\dotnet API.dll
