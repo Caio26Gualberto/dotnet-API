@@ -13,7 +13,7 @@ signInButton.addEventListener('click', () => {
 function openModal() {
 	var modal = document.getElementById("modal");
 	modal.style.display = "block";
-}a
+}
 
 // Função para fechar o popup modal
 function closeModal() {
