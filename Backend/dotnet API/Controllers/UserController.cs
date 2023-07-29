@@ -124,7 +124,7 @@ namespace dotnet_API.Controllers
             var uri = GenerateURIPassword(token);
             await _emailService.SendMailAsync(user.Email, uri);
 
-            return Ok();
+            return Ok("Email com redefinição enviado para o email");
         }
 
         [HttpGet("ValidateEmailPasswordToken")]

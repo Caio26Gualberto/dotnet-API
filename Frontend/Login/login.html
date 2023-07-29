@@ -29,10 +29,11 @@
 				<span>use sua conta</span>
 				<input type="text" id="enterLogin" placeholder="Login ou email" />
 				<input type="password" id="passwordLogin" placeholder="Senha" />
-				<a href="#">Esqueceu sua senha?</a>
+				<a href="#" id="forgotPasswordLink" onclick="openModal()">Esqueceu sua senha?</a>
 				<button class="hover-button" onclick="login()">Entrar</button>
-				<div id="messageLogin"></div>
+				<div id="messageLogin"></div>				
 			</form>
+
 		</div>
 		<div class="overlay-container">
 			<div class="overlay">
@@ -46,6 +47,16 @@
 					<p>Entre com suas informações e embarque no mundo do rock</p>
 					<button class="ghost" id="signUp">Registrar-se</button>
 				</div>
+			</div>
+		</div>
+		<div id="modal" class="modal">
+			<div class="modal-content">
+				<span class="close-btn" onclick="closeModal()">&times;</span>
+				<h2>Recuperação de Senha</h2>
+				<p>Insira seu e-mail para receber as instruções de recuperação:</p>
+				<div id="forgotPasswordMessage"></div>
+				<input type="email" id="resetPasswordEmail" placeholder="Seu e-mail">
+				<button onclick="forgotPassword()">Enviar</button>
 			</div>
 		</div>
 	</div>
