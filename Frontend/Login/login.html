@@ -1,0 +1,51 @@
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>A New Level</title>
+	<link rel="stylesheet" href="login.css">
+</head>
+<body>
+	<h2>Bem-vindo a página do metal!</h2>
+<div class="container" id="container">
+	<div class="form-container sign-up-container">
+		<form action="#">
+			<h1>Registre-se</h1>
+			<span>use seu email para o registro</span>
+			<input type="text" id="name" placeholder="Nome" />
+			<input type="text" id="login" placeholder="Login" />
+			<input type="password" id="password" placeholder="Senha" />
+			<input type="email" id="email" placeholder="Email" />
+			<button class="hover-button" onclick="registerUser()">Registrar</button>
+			<div id="message"></div>
+		</form>
+	</div>
+	<div class="form-container sign-in-container">
+		<form action="#">
+			<h1>Entrar</h1>
+			<span>use sua conta</span>
+			<input type="email" placeholder="Email" />
+			<input type="password" placeholder="Senha" />
+			<a href="#">Esqueceu sua senha?</a>
+			<button class="hover-button">Entrar</button>
+		</form>
+	</div>
+	<div class="overlay-container">
+		<div class="overlay">
+			<div class="overlay-panel overlay-left">
+				<h1>Bem-vindo de volta!</h1>
+				<p>Mantenha-se conectado</p>
+				<button class="ghost" id="signIn">Entrar</button>
+			</div>
+			<div class="overlay-panel overlay-right">
+				<h1>Olá, metal!</h1>
+				<p>Entre com suas informações e embarque no mundo do rock</p>
+				<button class="ghost" id="signUp">Registrar-se</button>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+<script src="login.js"></script>
+</html>

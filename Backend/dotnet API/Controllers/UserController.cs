@@ -38,7 +38,7 @@ namespace dotnet_API.Controllers
                 .Any(x => x.Email == input.Email || x.Login == input.Login);
 
             if (isExistentAccount)
-                return BadRequest("Credencias já existentes em nosso sistema");
+                return BadRequest(new { success = false, message = "Credenciais já existentes em nosso sistema" });
 
             var user = await _userService.CreateAccount(input);
 
