@@ -38,11 +38,11 @@ namespace dotnet_API.Controllers
                 .Any(x => x.Email == input.Email || x.Login == input.Login);
 
             if (isExistentAccount)
-                return BadRequest(new { success = false, message = "Credenciais já existentes em nosso sistema" });
+                return BadRequest("Credenciais já existentes em nosso sistema");
 
             var user = await _userService.CreateAccount(input);
 
-            return Ok(new { success = false, message = "Registro feito com sucesso!" });
+            return Ok("Registro feito com sucesso!");
         }
 
 
@@ -63,13 +63,13 @@ namespace dotnet_API.Controllers
                 .FirstOrDefaultAsync();
 
             if (loginUser == null)
-                return BadRequest(new { success = false, message = "Usuário não encontrado" });
+                return BadRequest("Usuário não encontrado");
 
             if (!IsVerifyPasswordHash(input.Password, loginUser.PasswordHash, loginUser.PasswordSalt))
-                return BadRequest(new { success = false, message = "Senha incorreta" });
+                return BadRequest("Senha incorreta");
 
             string token = await _userService.CreateToken(loginUser);
-            return Ok(new { success = true, message = "Bem-vindo!" });
+            return Ok("Bem-vindo!");
         }
         [Authorize]
         [HttpPost("Delete")]
@@ -120,29 +120,10 @@ namespace dotnet_API.Controllers
             if (user == null)
                 return BadRequest("Não existe este email em nossa base de dados");
 
-            var token = await _emailService.CreateToken(user, _environment);
-            var uri = GenerateURIPassword(token);
+            var uri = await _userService.GenerateURI(email);
             await _emailService.SendMailAsync(user.Email, uri);
 
             return Ok("Email com redefinição enviado para o email");
-        }
-
-        [HttpGet("ValidateEmailPasswordToken")]
-        public async Task<IActionResult> ValidatePasswordToken(string Bearer)
-        {
-            var handler = new JwtSecurityTokenHandler();
-            var token = handler.ReadJwtToken(Bearer);
-            var email = token.Claims.FirstOrDefault(claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
-
-            var isValidEmail = _userRepository.GetAll()
-                .Any(x => x.Email == email);
-
-            if (!isValidEmail)
-                return BadRequest("Email inválido");
-
-            _userService.GenerateURI(email);
-
-            return Ok();
         }
 
         [HttpGet("RetrievingEmailFromToken")]
@@ -152,7 +133,8 @@ namespace dotnet_API.Controllers
                 .Where(x => x.Email == email)
                 .FirstOrDefault();
 
-            return Ok(email);
+            string url = "http://localhost:5500/ForgotPassword/forgotPassword.html";
+            return Redirect(url);
         }
 
         [HttpPost("GenerateNewPassword")]
@@ -167,12 +149,6 @@ namespace dotnet_API.Controllers
 
             _userService.GenerateNewPassword(user, password);
             return Ok("Senha atualizada!");
-        }
-
-        private string GenerateURIPassword(string token)
-        {
-            var link = Url.Action((nameof(ValidatePasswordToken)), "User", new { Bearer = token }, Request.Scheme);
-            return link;
         }
     }
 }

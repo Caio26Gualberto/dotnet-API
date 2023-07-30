@@ -5,7 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>A New Level</title>
-	<link rel="stylesheet" href="login.css">
+	<link rel="stylesheet" href="loginAndRegister.css">
 </head>
 
 <body class="image-with-opacity">
@@ -21,6 +21,8 @@
 				<input type="email" id="email" placeholder="Email" />
 				<button class="hover-button" onclick="registerUser()">Registrar</button>
 				<div id="messageRegister"></div>
+				<span class="span-obs">*Você poderá logar tanto por email ou login</span>
+				<span class="span-obs">*Nome será utilizado dentro da plataforma para os outros usuários te reconhecerem</span>
 			</form>
 		</div>
 		<div class="form-container sign-in-container">
@@ -56,11 +58,12 @@
 				<p>Insira seu e-mail para receber as instruções de recuperação:</p>
 				<div id="forgotPasswordMessage"></div>
 				<input type="email" id="resetPasswordEmail" placeholder="Seu e-mail">
-				<button onclick="forgotPassword()">Enviar</button>
+				<button class="ghost" onclick="forgotPassword()">Enviar</button>
 			</div>
 		</div>
 	</div>
 </body>
-<script src="login.js"></script>
+<script src="loginAndRegister.js"></script>
+<script src="../tailwind.config.js"></script>
 
 </html>

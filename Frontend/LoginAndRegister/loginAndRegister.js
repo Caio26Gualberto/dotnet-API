@@ -39,6 +39,7 @@ function registerUser() {
 	const name = document.getElementById('name').value;
 	const login = document.getElementById('login').value;
 	const password = document.getElementById('password').value;
+	const messageElement = document.getElementById('messageRegister');
 
 	const userData = {
 		email: email,
@@ -48,6 +49,10 @@ function registerUser() {
 		birthPlace: ''
 	};
 
+	if (email === '' ||name === '' ||login === '' || password === '') {
+		return errorMessage('Preencha todos os requisitos', messageElement)
+	}
+
 	fetch('https://localhost:7213/api/User/Register', {
 		method: 'POST',
 		headers: {
@@ -55,25 +60,26 @@ function registerUser() {
 		},
 		body: JSON.stringify(userData)
 	})
-		.then(response => response.json())
-		.then(data => {
-			console.log();
-			if (data.hasOwnProperty('success')) {
-				const messageElement = document.getElementById('messageRegister');
-				if (data.success) {
-					messageElement.textContent = data.message; // Mensagem de sucesso
-				} else {
-					messageElement.textContent = data.message; // Mensagem de erro
-				}
+		.then(response => {
+			if (response.ok) {
+				return response.text().then(errorMessageText => sucessfulMessage(errorMessageText, messageElement)); // Trata a resposta como texto
 			} else {
-				messageElement.textContent = data.message;
+				return response.text().then(errorMessageText => errorMessage(errorMessageText, messageElement));
 			}
 		})
+		.catch(error => {
+			console.error('Erro:', error);
+		});
 }
 
 function login() {
 	const login = document.getElementById('enterLogin').value;
 	const password = document.getElementById('passwordLogin').value;
+	const messageElement = document.getElementById('messageLogin')
+
+	if(login === '' || password === '') {
+		return errorMessage('Preencha os campos', messageElement)
+	}
 
 	const loginData = {
 		login: login,
@@ -86,25 +92,24 @@ function login() {
 		},
 		body: JSON.stringify(loginData)
 	})
-		.then(response => response.json())
-		.then(data => {
-			const messageElement = document.getElementById('messageLogin');
-			if (data.hasOwnProperty('success')) {
-				if (data.success) {
-					messageElement.textContent = data.message; // Mensagem de sucesso
-				} else {
-					messageElement.textContent = data.message; // Mensagem de erro
-					messageElement.setAttribute('class', 'errorMessage')
-				}
+		.then(response => {
+			if (response.ok) {
+				return response.text().then(errorMessageText => sucessfulMessage(errorMessageText, messageElement)); // Trata a resposta como texto
 			} else {
-				messageElement.textContent = data.message;
+				return response.text().then(errorMessageText => errorMessage(errorMessageText, messageElement));
 			}
 		})
+		.catch(error => {
+			console.error('Erro:', error);
+		});
 }
 
 function forgotPassword() {
 	const email = document.getElementById('resetPasswordEmail').value;
 	const messageElement = document.getElementById('forgotPasswordMessage');
+	if (email === '') {
+		return errorMessage('Preencha o campo', messageElement);
+	}
 	fetch(`https://localhost:7213/api/User/ForgottenPassword?email=${encodeURIComponent(email)}`, {
 		method: 'POST',
 		headers: {
@@ -113,22 +118,21 @@ function forgotPassword() {
 	})
 		.then(response => {
 			if (response.ok) {
-				return response.text(); // Trata a resposta como texto
+				return response.text().then(errorMessageText => sucessfulMessage(errorMessageText, messageElement)); // Trata a resposta como texto
 			} else {
 				return response.text().then(errorMessageText => errorMessage(errorMessageText, messageElement));
 			}
-		})
-		.then(data => {
-			messageElement.textContent = data;
-			messageElement.setAttribute('class', 'errorMessage')
 		})
 		.catch(error => {
 			console.error('Erro:', error);
 		});
 }
 function errorMessage(data, messageElement) {
-	console.log(data)
-	console.log(messageElement);
 	messageElement.textContent = data;
 	messageElement.setAttribute('class', 'errorMessage')
+}
+
+function sucessfulMessage(data, messageElement) {
+	messageElement.textContent = data;
+	messageElement.setAttribute('class', 'sucessfulMessage')
 }

@@ -23,9 +23,8 @@ namespace dotnet_API.Services
             var from = new EmailAddress(environment.EmailLogin, "A New Level Music");
             var subject = emailClass.ResetSubject;
             var to = new EmailAddress(userEmail, userEmail.FriendlyEmailName());
-            var plainTextContent = "Ola mundo";
-            var htmlContent = $"<strong>{emailClass.ResetBody}</strong><br>" +
-                url;
+            var plainTextContent = $"Clique no link abaixo para redefinir sua senha:\n{url}";
+            var htmlContent = $"<p>Clique no link abaixo para redefinir sua senha:</p><p><a href='{url}'>{url}</a></p>";
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
             var response = await client.SendEmailAsync(msg);
         }

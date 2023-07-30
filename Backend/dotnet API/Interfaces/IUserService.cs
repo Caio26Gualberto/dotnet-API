@@ -10,7 +10,7 @@ namespace dotnet_API.Interfaces
         public void UpdateUser(User input);
         public Task<User> CreateAccount(CreateUserDto input);
         public Task<string> CreateToken(User user);
-        public void GenerateURI(string email);
+        public Task<string> GenerateURI(string email);
         public void GenerateNewPassword(User user, string password);
     }
 }

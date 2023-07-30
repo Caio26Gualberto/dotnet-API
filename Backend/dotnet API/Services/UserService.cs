@@ -91,15 +91,16 @@ namespace dotnet_API.Services
             return jwt;
         }
 
-        public void GenerateURI(string email)
+        public async Task<string> GenerateURI(string email)
         {
             string emailCodificado = HttpUtility.UrlEncode(email);
-            string urlDeRedirecionamento = "https://localhost:7213/api/User/RecoverAccount?email=" + emailCodificado;
+            string urlDeRedirecionamento = $"http://localhost:5500/ForgotPassword/forgotPassword.html?Email={emailCodificado}";
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlDeRedirecionamento);
-            request.Method = "POST";
+            request.Method = "GET";
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             response.Close();
+            return urlDeRedirecionamento;
         }
 
         public void GenerateNewPassword(User user, string password)
