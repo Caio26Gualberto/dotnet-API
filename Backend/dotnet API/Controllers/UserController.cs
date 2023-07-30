@@ -104,7 +104,7 @@ namespace dotnet_API.Controllers
         [HttpGet("GetUserById")]
         public async Task<IActionResult> GetUserById(int userId)
         {
-            var usuarioa = _userRepository.GetAll().FirstOrDefault(x => x.Id == userId);
+            var usuario = _userRepository.GetAll().FirstOrDefault(x => x.Id == userId);
 
             return Ok(usuario);
         }
