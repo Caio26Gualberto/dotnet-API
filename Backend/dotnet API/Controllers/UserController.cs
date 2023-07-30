@@ -110,8 +110,8 @@ namespace dotnet_API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("ForgottenPassword")]
-        public async Task<IActionResult> ForgotPassword(string email)
+        [HttpGet("ForgottenPassword")]
+        public async Task<IActionResult> ForgotPassword([FromQuery]string email)
         {
             var user = _userRepository.GetAll()
                 .Where(x => x.Email == email)
@@ -120,35 +120,23 @@ namespace dotnet_API.Controllers
             if (user == null)
                 return BadRequest("Não existe este email em nossa base de dados");
 
-            var uri = await _userService.GenerateURI(email);
+            var uri = await _userService.GenerateURI(email, user.Id);
             await _emailService.SendMailAsync(user.Email, uri);
 
             return Ok("Email com redefinição enviado para o email");
         }
 
-        [HttpGet("RetrievingEmailFromToken")]
-        public async Task<IActionResult> RecoverAccount([FromQuery] string email)
+        [AllowAnonymous]
+        [HttpPost("UpdatePassword")]
+        public async Task<IActionResult> UpdatePassword(UpdatePasswordDto input)
         {
-            var userFromEmail = _userRepository.GetAll()
-                .Where(x => x.Email == email)
-                .FirstOrDefault();
+            var user = await _userRepository.GetAll().FirstOrDefaultAsync(x => x.Id == input.Id);
 
-            string url = "http://localhost:5500/ForgotPassword/forgotPassword.html";
-            return Redirect(url);
-        }
+            if (input.Password == user.Password)
+                return BadRequest("Sua senha deve ser diferente da anterior");
 
-        [HttpPost("GenerateNewPassword")]
-        public async Task<IActionResult> GenerateNewPassoword(string password, string email)
-        {
-            var user = _userRepository.GetAll()
-                .Where(x => x.Email == email)
-                .FirstOrDefault();
-
-            if (user.Password == password)
-                return BadRequest("Sua senha deve ser diferente da antiga");
-
-            _userService.GenerateNewPassword(user, password);
-            return Ok("Senha atualizada!");
+            _userService.GenerateNewPassword(user, input.Password);
+            return Ok("Senha atualizada com sucesso!");
         }
     }
 }

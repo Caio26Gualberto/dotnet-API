@@ -91,15 +91,10 @@ namespace dotnet_API.Services
             return jwt;
         }
 
-        public async Task<string> GenerateURI(string email)
+        public async Task<string> GenerateURI(string email, int id)
         {
             string emailCodificado = HttpUtility.UrlEncode(email);
-            string urlDeRedirecionamento = $"http://localhost:5500/ForgotPassword/forgotPassword.html?Email={emailCodificado}";
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlDeRedirecionamento);
-            request.Method = "GET";
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            response.Close();
+            string urlDeRedirecionamento = $"http://localhost:5500/ForgotPassword/forgotPassword.html?Email={emailCodificado}&Id={id}";
             return urlDeRedirecionamento;
         }
 

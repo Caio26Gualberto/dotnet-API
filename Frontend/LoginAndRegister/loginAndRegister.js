@@ -107,14 +107,12 @@ function login() {
 function forgotPassword() {
 	const email = document.getElementById('resetPasswordEmail').value;
 	const messageElement = document.getElementById('forgotPasswordMessage');
+	debugger;
 	if (email === '') {
 		return errorMessage('Preencha o campo', messageElement);
 	}
 	fetch(`https://localhost:7213/api/User/ForgottenPassword?email=${encodeURIComponent(email)}`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
+		method: 'GET',
 	})
 		.then(response => {
 			if (response.ok) {
@@ -126,13 +124,4 @@ function forgotPassword() {
 		.catch(error => {
 			console.error('Erro:', error);
 		});
-}
-function errorMessage(data, messageElement) {
-	messageElement.textContent = data;
-	messageElement.setAttribute('class', 'errorMessage')
-}
-
-function sucessfulMessage(data, messageElement) {
-	messageElement.textContent = data;
-	messageElement.setAttribute('class', 'sucessfulMessage')
 }
