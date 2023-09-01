@@ -3,6 +3,7 @@ using dotnet_API.Interfaces;
 using dotnet_API.Models;
 using dotnet_API.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
@@ -15,35 +16,51 @@ namespace dotnet_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
         private readonly IUserRepository _userRepository;
         private readonly EnvironmentVariable _environment;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
 
-        public UserController(UserService userService, IUserRepository userRepository, IEmailService emailService, EnvironmentVariable environment)
+
+        public UserController(IUserService userService, IUserRepository userRepository, IEmailService emailService, EnvironmentVariable environment,UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager)
         {
             _userService = userService;
             _userRepository = userRepository;
             _emailService = emailService;
             _environment = environment;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         [AllowAnonymous]
         [HttpPost("Register")]
-        public async Task<IActionResult> Register(CreateUserDto input)
-        {
-            var isExistentAccount = _userRepository.GetAll()
-                .Any(x => x.Email == input.Email || x.Login == input.Login);
+        //public async Task<IActionResult> Register(CreateUserDto input)
+        //{
+        //    try
+        //    {
+        //        var isExistentAccount = _userRepository.GetAll()
+        //            .Any(x => x.Email == input.Email || x.Login == input.Login);
 
-            if (isExistentAccount)
-                return BadRequest("Credenciais já existentes em nosso sistema");
+        //        if (isExistentAccount)
+        //            return BadRequest("Credenciais já existentes em nosso sistema");
 
-            var user = await _userService.CreateAccount(input);
+        //        var user = await _userService.CreateAccount(input);
 
-            return Ok("Registro feito com sucesso!");
-        }
+        //        return Ok("Registro feito com sucesso!");
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return BadRequest(e.Message);
+        //    }
+        //}
+
 
 
         private bool IsVerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
@@ -68,8 +85,8 @@ namespace dotnet_API.Controllers
             if (!IsVerifyPasswordHash(input.Password, loginUser.PasswordHash, loginUser.PasswordSalt))
                 return BadRequest("Senha incorreta");
 
-            string token = await _userService.CreateToken(loginUser);
-            return Ok("Bem-vindo!");
+            //string token = await _userService.CreateToken(loginUser);
+            return Ok();
         }
         [Authorize]
         [HttpPost("Delete")]
@@ -81,6 +98,7 @@ namespace dotnet_API.Controllers
                 _userService.DeleteUser(user);
             else
                 return NotFound("Não foi possível encontrar o usuário");
+
 
             return Ok();
         }
@@ -111,7 +129,7 @@ namespace dotnet_API.Controllers
 
         [AllowAnonymous]
         [HttpGet("ForgottenPassword")]
-        public async Task<IActionResult> ForgotPassword([FromQuery]string email)
+        public async Task<IActionResult> ForgotPassword([FromQuery] string email)
         {
             var user = _userRepository.GetAll()
                 .Where(x => x.Email == email)
@@ -126,17 +144,17 @@ namespace dotnet_API.Controllers
             return Ok("Email com redefinição enviado para o email");
         }
 
-        [AllowAnonymous]
-        [HttpPost("UpdatePassword")]
-        public async Task<IActionResult> UpdatePassword(UpdatePasswordDto input)
-        {
-            var user = await _userRepository.GetAll().FirstOrDefaultAsync(x => x.Id == input.Id);
+        //[AllowAnonymous]
+        //[HttpPost("UpdatePassword")]
+        //public async Task<IActionResult> UpdatePassword(UpdatePasswordDto input)
+        //{
+        //    var user = await _userRepository.GetAll().FirstOrDefaultAsync(x => x.Id == input.Id);
 
-            if (input.Password == user.Password)
-                return BadRequest("Sua senha deve ser diferente da anterior");
+        //    if (input.Password == user.Password)
+        //        return BadRequest("Sua senha deve ser diferente da anterior");
 
-            _userService.GenerateNewPassword(user, input.Password);
-            return Ok("Senha atualizada com sucesso!");
-        }
+        //    _userService.GenerateNewPassword(user, input.Password);
+        //    return Ok("Senha atualizada com sucesso!");
+        //}
     }
 }

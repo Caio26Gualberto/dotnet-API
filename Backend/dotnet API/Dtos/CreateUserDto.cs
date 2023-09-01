@@ -11,6 +11,8 @@ namespace dotnet_API.Dtos
         [Required]
         public string Password { get; set; } = string.Empty;
         [Required]
+        public string ConfirmPassword { get; set; } = string.Empty;
+        [Required]
         public string Email { get; set; }
         public string? BirthPlace { get; set; }
     }

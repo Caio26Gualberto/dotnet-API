@@ -1,7 +1,11 @@
 ﻿using dotnet_API.Dtos;
+using dotnet_API.Entities;
 using dotnet_API.Interfaces;
 using dotnet_API.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
@@ -15,10 +19,19 @@ namespace dotnet_API.Services
     {
         private readonly ANewLevelContext _context;
         private readonly EnvironmentVariable _environment;
-        public UserService(ANewLevelContext context, EnvironmentVariable environment)
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly IRepository<User> _userRepository;
+        private readonly IEmailService _emailService;
+        public UserService(ANewLevelContext context, EnvironmentVariable environment, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager,
+            IRepository<User> repository, IEmailService emailService)
         {
             _context = context;
             _environment = environment;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _userRepository = repository;
+            _emailService = emailService;
         }
         public void CreateUser(User input)
         {
@@ -47,8 +60,27 @@ namespace dotnet_API.Services
             _context.SaveChanges();
         }
 
-        public async Task<User> CreateAccount(CreateUserDto input)
+        public async Task<UserManagerResponse> RegisterAccountAsync(CreateUserDto input)
         {
+            if (input == null)
+                throw new NullReferenceException("Campo está vazio!");
+
+            if (input.Password != input.ConfirmPassword)
+            {
+                return new UserManagerResponse
+                {
+                    Message = "As senhas não são iguais",
+                    IsSuccess = false
+                };
+            }
+            var identityUser = new IdentityUser
+            {
+
+                Email = input.Email,
+                UserName = input.Login,
+            };
+            var result = await _userManager.CreateAsync(identityUser, input.Password);
+
             CreatePasswordHash(input.Password, out byte[] passwordHash, out byte[] passwordSalt);
             User usuario = new User();
 
@@ -60,8 +92,65 @@ namespace dotnet_API.Services
             usuario.Login = input.Login;
             usuario.Password = input.Password;
 
-            CreateUser(usuario);
-            return usuario;
+            if (result.Succeeded)
+            {
+                var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(identityUser);
+                var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
+                var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
+
+                string url = $"https://localhost:7213/api/auth/confirmemail?userid={identityUser.Id}&token={validEmailToken}";
+
+                await _emailService.SendMailAsync(input.Email, url);
+                CreateUser(usuario);
+                return new UserManagerResponse
+                {
+                    Message = "Conta registrada!",
+                    IsSuccess = true
+                };
+            }
+
+            return new UserManagerResponse
+            {
+                Message = "Houve algum erro ao criar sua conta",
+                IsSuccess = false,
+                Errors = result.Errors.Select(x => x.Description)
+            };
+        }
+
+        public async Task<UserManagerResponse> LoginAsync(LoginDto input)
+        {
+            var user = _userRepository.GetAll().Where(x => x.Email == input.Login || x.Login == input.Login).FirstOrDefault();
+            var identityUser = await _userManager.FindByEmailAsync(input.Login);
+
+            if (identityUser == null)
+                identityUser = await _userManager.FindByNameAsync(input.Login);
+
+            if (user == null || identityUser == null)
+            {
+                return new UserManagerResponse
+                {
+                    Message = "Este email ou login não existe em nossa base de dados",
+                    IsSuccess = false
+                };
+            }
+
+            var result = await _userManager.CheckPasswordAsync(identityUser, input.Password);
+
+            if (!result)
+                return new UserManagerResponse
+                {
+                    Message = "Senha incorreta",
+                    IsSuccess = false
+                };
+
+            var token = await CreateToken(user);
+
+            return new UserManagerResponse
+            {
+                Message = token.Keys.First(),
+                IsSuccess = true,
+                ExpirationDate = token.Select(x => x.Value).Select(x => x.ExpirationDate).FirstOrDefault()
+            };
         }
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
@@ -71,12 +160,14 @@ namespace dotnet_API.Services
                 passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
             }
         }
-        public async Task<string> CreateToken(User user)
+        public async Task<Dictionary<string, UserManagerResponse>> CreateToken(User user)
         {
+            Dictionary<string, UserManagerResponse> dictionary = new Dictionary<string, UserManagerResponse>();
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Login),
-                new Claim(ClaimTypes.SerialNumber, user.Password)
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim("Email", user.Email)
             };
 
             var takeSecretKey = _environment.JWTApiToken;
@@ -84,13 +175,19 @@ namespace dotnet_API.Services
             var credential = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddDays(1),
+                expires: DateTime.Now.AddHours(2),
                 signingCredentials: credential);
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-            return jwt;
-        }
+            dictionary.Add(jwt, new UserManagerResponse
+            {
+                Message = jwt,
+                IsSuccess = true,
+                ExpirationDate = token.ValidTo
+            });
 
+            return dictionary;
+        }
         public async Task<string> GenerateURI(string email, int id)
         {
             string emailCodificado = HttpUtility.UrlEncode(email);
@@ -106,7 +203,100 @@ namespace dotnet_API.Services
             user.PasswordSalt = passwordSalt;
             user.PasswordHash = passwordHash;
             _context.Usuarios.Update(user);
-            _context.SaveChanges(); 
+            _context.SaveChanges();
+        }
+
+        public async Task<UserManagerResponse> ConfirmEmailAsync(string userId, string token)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                return new UserManagerResponse
+                {
+                    Message = "Usuário não encontrado",
+                    IsSuccess = false,
+                };
+
+            var decodedToken = WebEncoders.Base64UrlDecode(token);
+            string normalToken = Encoding.UTF8.GetString(decodedToken);
+
+            var result = await _userManager.ConfirmEmailAsync(user, normalToken);
+
+            if (result.Succeeded)
+                return new UserManagerResponse
+                {
+                    Message = "Email confirmado com sucesso!",
+                    IsSuccess = true
+                };
+
+            return new UserManagerResponse
+            {
+                Message = "Email não confirmado",
+                IsSuccess = false,
+                Errors = result.Errors.Select(x => x.Description)
+            };
+        }
+
+        public async Task<UserManagerResponse> ForgetPasswordAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return new UserManagerResponse
+                {
+                    Message = "Nenhum usuário associado com este email",
+                    IsSuccess = false
+                };
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = Encoding.UTF8.GetBytes(token);
+            var validToken = WebEncoders.Base64UrlEncode(encodedToken);
+
+            string url = $"http://localhost:5500/ForgotPassword/forgotPassword.html?email={email}&token={validToken}";
+
+            await _emailService.SendMailAsync(email, url);
+
+            return new UserManagerResponse
+            {
+                Message = "Email para redefinição de senha enviado",
+                IsSuccess = true
+            };
+        }
+
+        public async Task<UserManagerResponse> ResetPasswordAsync(UpdatePasswordDto input)
+        {
+            var user = await _userManager.FindByEmailAsync(input.Email);
+
+            if (user == null)
+                return new UserManagerResponse
+                {
+                    Message = "Nenhum usuário vinculado a este email",
+                    IsSuccess = false
+                };
+
+            if (input.NewPassword != input.ConfirmPassword)
+                return new UserManagerResponse
+                {
+                    Message = "As senhas não coincidem",
+                    IsSuccess = false
+                };
+            var decodedToken = WebEncoders.Base64UrlDecode(input.Token);
+            string normalToken = Encoding.UTF8.GetString(decodedToken);
+
+            var result = await _userManager.ResetPasswordAsync(user, normalToken, input.NewPassword);
+
+            if (result.Succeeded)
+                return new UserManagerResponse
+                {
+                    Message = "Senha redefinida com sucesso!",
+                    IsSuccess = true
+                };
+
+            return new UserManagerResponse
+            {
+                Message = "Alguma coisa deu errado, tente novamente mais tarde",
+                IsSuccess = false,
+                Errors = result.Errors.Select(x => x.Description)
+            };
         }
     }
 }

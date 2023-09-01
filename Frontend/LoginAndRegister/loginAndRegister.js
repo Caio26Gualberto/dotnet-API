@@ -39,12 +39,14 @@ function registerUser() {
 	const name = document.getElementById('name').value;
 	const login = document.getElementById('login').value;
 	const password = document.getElementById('password').value;
+	const confirmPassword = document.getElementById('confirmPassword').value;
 	const messageElement = document.getElementById('messageRegister');
 
 	const userData = {
 		email: email,
 		name: name,
 		login: login,
+		confirmPassword: confirmPassword,
 		password: password,
 		birthPlace: ''
 	};
@@ -53,7 +55,7 @@ function registerUser() {
 		return errorMessage('Preencha todos os requisitos', messageElement)
 	}
 
-	fetch('https://localhost:7213/api/User/Register', {
+	fetch('https://localhost:7213/api/Auth/Register', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
@@ -62,9 +64,9 @@ function registerUser() {
 	})
 		.then(response => {
 			if (response.ok) {
-				return response.text().then(errorMessageText => sucessfulMessage(errorMessageText, messageElement)); // Trata a resposta como texto
+				return response.json().then(errorMessageText => sucessfulMessage(errorMessageText.message, messageElement)); // Trata a resposta como texto
 			} else {
-				return response.text().then(errorMessageText => errorMessage(errorMessageText, messageElement));
+				return response.json().then(errorMessageText => errorMessage(errorMessageText.message, messageElement));
 			}
 		})
 		.catch(error => {
@@ -85,7 +87,7 @@ function login() {
 		login: login,
 		password: password
 	}
-	fetch('https://localhost:7213/api/User/Login', {
+	fetch('https://localhost:7213/api/Auth/Login', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
@@ -94,9 +96,9 @@ function login() {
 	})
 		.then(response => {
 			if (response.ok) {
-				return response.text().then(errorMessageText => sucessfulMessage(errorMessageText, messageElement)); // Trata a resposta como texto
+				return response.json().then(data => redirectToLandingPage(data.message)); // Trata a resposta como texto
 			} else {
-				return response.text().then(errorMessageText => errorMessage(errorMessageText, messageElement));
+				return response.json().then(data => errorMessage(data.message, messageElement));
 			}
 		})
 		.catch(error => {
@@ -107,12 +109,11 @@ function login() {
 function forgotPassword() {
 	const email = document.getElementById('resetPasswordEmail').value;
 	const messageElement = document.getElementById('forgotPasswordMessage');
-	debugger;
 	if (email === '') {
 		return errorMessage('Preencha o campo', messageElement);
 	}
 	fetch(`https://localhost:7213/api/User/ForgottenPassword?email=${encodeURIComponent(email)}`, {
-		method: 'GET',
+		method: 'GET'
 	})
 		.then(response => {
 			if (response.ok) {
@@ -125,3 +126,21 @@ function forgotPassword() {
 			console.error('Erro:', error);
 		});
 }
+function redirectToLandingPage(message) {
+	const expirationDate = new Date();
+	expirationDate.setTime(expirationDate.getTime() + (2 * 60 * 60 * 1000)); // 2 horas em milissegundos
+	const expires = expirationDate.toGMTString();
+	document.cookie = `jwtToken=${message}; expires=${expires}`;
+	window.location.href = 'http://localhost:5500/LandingPage/landingPage.html'
+}
+// function deleteCookie(cookieName) {
+//   const pastDate = new Date(0).toGMTString(); // Define uma data no passado
+
+//   // Define o cookie com um valor vazio e uma data de expiração no passado
+//   document.cookie = `${cookieName}=; expires=${pastDate}`;
+// }
+
+// // Exemplo de uso: exclui o cookie chamado "jwtToken"
+// deleteCookie("jwtToken");
+
+
