@@ -1,5 +1,5 @@
-var id;
 var email;
+var token;
 const messageElement = document.getElementById('newPasswordMessage');
 
 function init() {
@@ -7,11 +7,8 @@ function init() {
 
     var params = new URLSearchParams(new URL(url).search);
 
-    id = params.get('Id');
-    email = params.get('Email');
-
-    console.log("Id: ", id);
-    console.log("Email: ", email);
+    email = params.get('email');
+    token = params.get('token');
 }
 
 function showPassword() {
@@ -28,7 +25,6 @@ function showPassword() {
 }
 
 function updatePassword() {
-    const userId = id;
     const userPassword = document.getElementById('password').value;
     const userNewPassword = document.getElementById('newPassword').value;
 debugger;
@@ -36,10 +32,13 @@ debugger;
         return errorMessage('As senhas diferem', messageElement);
     }
     const updatePasswordData = {
-        id: userId,
-        password: userNewPassword
+        token: token,
+        newPassword: userPassword,
+        email: email,
+        confirmPassword: userNewPassword
+
     }
-    fetch(`https://localhost:7213/api/User/UpdatePassword`, {
+    fetch(`https://localhost:7213/api/Auth/ResetPassword`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -47,7 +46,6 @@ debugger;
         body: JSON.stringify(updatePasswordData)
     })
         .then(response => {
-            debugger;
             if (response.ok) {
                 const link = document.createElement('a');
                 const text = document.createTextNode('Retornar a página de login');
@@ -59,7 +57,7 @@ debugger;
 
             } else {
                 return response.json().then(data => {
-                    const errorMessager = data.errorMessage;
+                    const errorMessager = data.message;
                     return errorMessage(errorMessager, messageElement)
                 });
             }

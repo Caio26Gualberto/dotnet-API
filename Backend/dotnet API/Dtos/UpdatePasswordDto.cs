@@ -4,8 +4,16 @@ namespace dotnet_API.Dtos
 {
     public class UpdatePasswordDto
     {
-        public int Id { get; set; }
-        [MinLength(6, ErrorMessage = "A senha deve conter no mínimo 6 caracteres.")]
-        public string Password { get; set; }    
+        [Required]
+        public string Token { get; set; }
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+        [Required]
+        [StringLength(50, MinimumLength = 6)]
+        public string NewPassword { get; set; }
+        [Required]
+        [StringLength(50, MinimumLength = 6)]
+        public string ConfirmPassword { get; set; }
     }
 }

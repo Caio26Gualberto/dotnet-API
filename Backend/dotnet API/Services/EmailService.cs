@@ -12,19 +12,41 @@ namespace dotnet_API.Services
 {
     public class EmailService : IEmailService
     {
-        public async Task SendMailAsync(string userEmail, string uri)
+        public EmailService()
         {
-            EnvironmentVariable environment = new();
-            Email emailClass = new();
+        }
+        public async Task SendMailAsync(string userEmail, string uri = "")
+        {
+            Email emailPattern = new Email();
+            EnvironmentVariable environmentVariable = new EnvironmentVariable();
             var url = uri;
 
-            var apiKey = environment.SendgridApiKey;
+            if (url.Contains("confirmemail"))
+                await SendMailRegisterAsync(userEmail, environmentVariable, emailPattern, url);
+            else
+            {
+                var apiKey = environmentVariable.SendgridApiKey;
+                var client = new SendGridClient(apiKey);
+                var from = new EmailAddress(environmentVariable.EmailLogin, "A New Level Music");
+                var subject = emailPattern.ResetSubject;
+                var to = new EmailAddress(userEmail, userEmail.FriendlyEmailName());
+                var plainTextContent = $"Clique no link abaixo para redefinir sua senha:\n{url}";
+                var htmlContent = $"<p>Clique no link abaixo para redefinir sua senha:</p><p><a href='{url}'>{url}</a></p>";
+                var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+                var response = await client.SendEmailAsync(msg);
+            }
+        }
+
+        public async Task SendMailRegisterAsync(string userEmail, EnvironmentVariable environmentVariable, Email emailPattern, string url)
+        {
+            var apiKey = environmentVariable.SendgridApiKey;
             var client = new SendGridClient(apiKey);
-            var from = new EmailAddress(environment.EmailLogin, "A New Level Music");
-            var subject = emailClass.ResetSubject;
+            var from = new EmailAddress(environmentVariable.EmailLogin, "A New Level Music");
+            var subject = emailPattern.ResetSubject;
             var to = new EmailAddress(userEmail, userEmail.FriendlyEmailName());
-            var plainTextContent = $"Clique no link abaixo para redefinir sua senha:\n{url}";
-            var htmlContent = $"<p>Clique no link abaixo para redefinir sua senha:</p><p><a href='{url}'>{url}</a></p>";
+            var plainTextContent = $"Confirme seu email";
+            var htmlContent = "<h3>Bem vindo headbanger</h3>" +
+                $"<p>Por favor confirme seu email{url}</p>";
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
             var response = await client.SendEmailAsync(msg);
         }

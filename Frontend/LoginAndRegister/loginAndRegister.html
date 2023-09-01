@@ -18,8 +18,9 @@
 				<span>use seu email para o registro</span>
 				<input type="text" id="name" placeholder="Nome" />
 				<input type="text" id="login" placeholder="Login" />
-				<input type="password" id="password" placeholder="Senha" />
 				<input type="email" id="email" placeholder="Email" />
+				<input type="password" id="password" placeholder="Senha" />
+				<input type="password" id="confirmPassword" placeholder="Confirme sua senha" />
 				<button class="hover-button" onclick="registerUser()">Registrar</button>
 				<div id="messageRegister"></div>
 				<span class="span-obs">*Você poderá logar tanto por email ou login</span>
@@ -32,7 +33,7 @@
 				<span>use sua conta</span>
 				<input type="text" id="enterLogin" placeholder="Login ou email" />
 				<input type="password" id="passwordLogin" placeholder="Senha" />
-				<a href="#" id="forgotPasswordLink" onclick="openModal()">Esqueceu sua senha?</a>
+				<a id="forgotPasswordLink" onclick="openModal()">Esqueceu sua senha?</a>
 				<button class="hover-button" onclick="login()">Entrar</button>
 				<div id="messageLogin"></div>				
 			</form>

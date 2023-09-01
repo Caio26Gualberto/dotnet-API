@@ -8,5 +8,6 @@
         public string SpotifyClientId { get; set; } = Environment.GetEnvironmentVariable("ClientIdSpotify");
         public string SpotifySecretId { get; set; } = Environment.GetEnvironmentVariable("ClientSecretSpotify");
         public string SendgridApiKey { get; set; } = Environment.GetEnvironmentVariable("SendgridApiKey");
+        public string Localhost { get; set; } = Environment.GetEnvironmentVariable("Localhost");
     }
 }
