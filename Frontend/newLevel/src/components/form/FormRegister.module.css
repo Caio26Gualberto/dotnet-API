@@ -1,0 +1,16 @@
+.hover_button {
+	padding: 10px 20px;
+	font-size: 16px;
+	background-color: black;
+	color: #fff;
+	border: none;
+	cursor: pointer;
+}
+
+.hover_button:hover {
+	cursor: pointer;
+}
+
+.span_obs {
+	margin-top: 10px;
+}

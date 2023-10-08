@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="../newLevel/src/index.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Level</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if (window.location.pathname === '/') {
+        console.log('entrou')
+        document.documentElement.classList.add('image-with-opacity')
+      } else {
+        console.log('dale');
+        document.documentElement.classList.remove('image-with-opacity')
+      }
+     </script>
+  </body>
+</html>

@@ -1,0 +1,71 @@
+<html lang="en" class="image-with-opacity">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>A New Level</title>
+	<link rel="stylesheet" href="../global.css">
+	<link rel="stylesheet" href="loginAndRegister.css">
+</head>
+
+<body>
+	<h2 class="welcome">Bem-vindo a página do metal!</h2>
+	<div class="container" id="container">
+		<div class="form-container sign-up-container">
+			<form action="#">
+				<h1>Registre-se</h1>
+				<span>use seu email para o registro</span>
+				<input type="text" id="name" placeholder="Nome" />
+				<input type="text" id="login" placeholder="Login" />
+				<input type="email" id="email" placeholder="Email" />
+				<input type="password" id="password" placeholder="Senha" />
+				<input type="password" id="confirmPassword" placeholder="Confirme sua senha" />
+				<button class="hover-button" onclick="registerUser()">Registrar</button>
+				<!-- <div id="messageRegister"></div> -->
+				<span class="span-obs">*Você poderá logar tanto por email ou login</span>
+				<span class="span-obs">*Nome será utilizado dentro da plataforma para os outros usuários te reconhecerem</span>
+			</form>
+		</div>
+		<div class="form-container sign-in-container">
+			<form action="#">
+				<h1>Entrar</h1>
+				<span>use sua conta</span>
+				<input type="text" id="enterLogin" placeholder="Login ou email" />
+				<input type="password" id="passwordLogin" placeholder="Senha" />
+				<a id="forgotPasswordLink" onclick="openModal()">Esqueceu sua senha?</a>
+				<button class="hover-button" onclick="login()">Entrar</button>
+				<div id="messageLogin"></div>				
+			</form>
+
+		</div>
+		<div class="overlay-container">
+			<div class="overlay">
+				<div class="overlay-panel overlay-left">
+					<h1>Bem-vindo de volta!</h1>
+					<p>Mantenha-se conectado</p>
+					<button class="ghost" id="signIn">Entrar</button>
+				</div>
+				<div class="overlay-panel overlay-right">
+					<h1>Olá, metal!</h1>
+					<p>Entre com suas informações e embarque no mundo do rock</p>
+					<button class="ghost" id="signUp">Registrar-se</button>
+				</div>
+			</div>
+		</div>
+		<div id="modal" class="modal">
+			<div class="modal-content">
+				<span class="close-btn" onclick="closeModal()">&times;</span>
+				<h2>Recuperação de Senha</h2>
+				<p>Insira seu e-mail para receber as instruções de recuperação:</p>
+				<div id="forgotPasswordMessage"></div>
+				<input type="email" id="resetPasswordEmail" placeholder="Seu e-mail">
+				<button class="ghost" onclick="forgotPassword()">Enviar</button>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="../global.js"></script>
+<script src="loginAndRegister.js"></script>
+
+</html>

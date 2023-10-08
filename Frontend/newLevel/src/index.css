@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
+
+
+.image-with-opacity {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	background-image: url('./assets/Headbanger7.jpeg'), url('./assets/Headbanger5.jpeg');
+	background-repeat: no-repeat;
+	background-position: left, right;
+	background-attachment: fixed;
+	background-size: 50%;
+	background-blend-mode: darken;
+}
+
+.image-with-opacity::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+}
