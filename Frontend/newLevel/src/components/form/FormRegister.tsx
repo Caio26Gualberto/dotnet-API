@@ -2,7 +2,8 @@ import { useState } from "react"
 import { IRegisterUser } from "../../interfaces/IRegisterUser"
 import Input from "../input/Input"
 import Style from './FormRegister.module.css'
-import axios from "axios"
+import axiosInstance from "../../axiosInstances"
+import Loading from "../loading/Loading"
 
 const FormRegister = () => {
   const[name, setName] = useState<string>()
@@ -10,8 +11,11 @@ const FormRegister = () => {
   const[email, setEmail] = useState<string>()
   const[password, setPassword] = useState<string>()
   const[confirmPassword, setconfirmPassword] = useState<string>()
+  const[loading, setLoading] = useState<boolean>(false)
 
   const submit = () => {
+    setLoading(true)
+
     const userToRegister: IRegisterUser = {
       email: email,
       name: name,
@@ -21,13 +25,16 @@ const FormRegister = () => {
       birthplace: '',
     }
 
-    axios.post('https://localhost:7213/api/Auth/Register', userToRegister)
+    axiosInstance.post('/Auth/Register', userToRegister)
     .then(function (response) {
     })
+
+    // setLoading(false)
   }
 
   return (
     <form action="#">
+        {loading && <Loading/>}
         <h1>Registre-se</h1>
         <span>use seu email para o registro</span>
         <Input type='text' id='name' placeholder='Nome' handleOnChange={(e:any) => setName(e.target.value)}/>

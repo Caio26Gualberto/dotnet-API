@@ -1,0 +1,16 @@
+.popup_alert {
+    position: fixed;
+    right: -100%;
+    top: 20%;
+    transform: translateY(-50%);
+    animation: slide-in 0.2s linear forwards;
+}
+
+@keyframes slide-in {
+    0% {
+        right: -100%;
+    }
+    100% {
+        right: -80%;
+    }
+}

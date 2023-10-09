@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect, useRef} from 'react';
+import axiosInstance from '../../axiosInstances'
 import Input from '../input/Input';
-import Style from './ForgotPassword.module.css';
+import Style from './ForgotPasswordModal.module.css';
 
 interface ForgotPasswordProps {
   modalOpen: boolean;
@@ -11,8 +12,27 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ modalOpen, onClose }) =
   const [email, setEmail] = useState<string>('');
 
   const forgotPassword = () => {
-    // Implemente a lógica para redefinir a senha aqui
+    axiosInstance.get(`/User/ForgottenPassword?email=${encodeURIComponent(email)}`)
+    .then(resp => {
+      console.log(resp)
+    })
   };
+
+  // Adicione um evento de tecla ESC para fechar a modal
+  const handleEscapeKey = (event: KeyboardEvent) => {
+    if (event.key === "Escape" && modalOpen) {
+      onClose();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleEscapeKey);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, [modalOpen, onClose]);
+
 
   return (
     <>

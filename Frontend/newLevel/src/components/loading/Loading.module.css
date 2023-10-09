@@ -1,0 +1,16 @@
+.loading_overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999; /* Defina um valor alto para garantir que o Loading fique acima de outros elementos */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+  .loading_indicator {
+    color: white; /* Cor do indicador de carregamento */
+}

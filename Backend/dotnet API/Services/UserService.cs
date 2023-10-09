@@ -147,7 +147,8 @@ namespace dotnet_API.Services
 
             return new UserManagerResponse
             {
-                Message = token.Keys.First(),
+                Message = "Bem-vindo!",
+                Token = token.Keys.First(),
                 IsSuccess = true,
                 ExpirationDate = token.Select(x => x.Value).Select(x => x.ExpirationDate).FirstOrDefault()
             };

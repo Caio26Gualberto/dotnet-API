@@ -27,7 +27,7 @@ namespace dotnet_API.Controllers
                 return BadRequest(result);
             }
 
-            return BadRequest(new {Message = "Alguma propriedade não é valida"});
+            return BadRequest(new { Message = "Alguma propriedade não é valida" });
         }
 
         [HttpPost("Login")]
@@ -42,7 +42,7 @@ namespace dotnet_API.Controllers
 
                 return BadRequest(result);
             }
-            return BadRequest(new {Message = "Alguma propriedade não é valida"});
+            return BadRequest(new { Message = "Alguma propriedade não é valida" });
         }
 
         [HttpGet("ConfirmEmail")]
@@ -62,12 +62,12 @@ namespace dotnet_API.Controllers
         [HttpPost("ForgetPassword")]
         public async Task<IActionResult> ForgetPassoword(string email)
         {
-            if(string.IsNullOrEmpty(email))
+            if (string.IsNullOrEmpty(email))
                 return NotFound();
 
             var result = await _userService.ForgetPasswordAsync(email);
 
-           if (result.IsSuccess)
+            if (result.IsSuccess)
                 return Ok(result);
 
             return BadRequest(result);
@@ -80,7 +80,7 @@ namespace dotnet_API.Controllers
             {
                 var result = await _userService.ResetPasswordAsync(input);
 
-                if (result.IsSuccess) 
+                if (result.IsSuccess)
                     return Ok(result);
 
                 return BadRequest(result);
