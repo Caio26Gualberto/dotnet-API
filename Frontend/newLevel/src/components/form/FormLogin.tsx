@@ -4,53 +4,47 @@ import Style from './FormLogin.module.css';
 import axiosInstance from '../../axiosInstances';
 import { ILoginUser } from '../../interfaces/ILoginUser';
 import { MouseEventHandler } from 'react';
-import ForgotPassword from '../modals/ForgotPasswordModal';
-import PopupMessages from '../popupMessages/PopupMessages';
+import { useLoading } from '../../context/LoadingContext';
+import { useAlert } from '../../context/PopupContext';
 
 const FormLogin: React.FC<{actionOpenModal: MouseEventHandler<HTMLAnchorElement> |undefined}> = ({actionOpenModal}) => {
   const [login, setLogin] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const [messagePopup, setMessagePopup] = useState<string>('')
-  const [typeOfMessage, setTypeOfMessage] = useState<string>('')
-  const [showPopup, setShowPopup] = useState<boolean>(false)
+  const { setIsLoading } = useLoading();
+  const {showAlert} = useAlert()
 
-
-  const showMessage = () => {
-    setShowPopup(true);
-
-    // Feche a mensagem após 3 segundos
-    setTimeout(() => {
-      setShowPopup(false);
-    }, 3000);
-  };
-
-  const loginRequest = () => {
-    if (login === '' || password === '') {
-      setMessagePopup('Preencha os campos')
-      setTypeOfMessage('warning')
-      showMessage()
+  const loginRequest = async () => {
+    try {
+      if (login === '' || password === '') {
+        showAlert('info', 'Preencha os campos')
+      } else {
+        setIsLoading(true);
+      }  
+      
+      const loginData: ILoginUser = {
+        login: login!,
+        password: password!,
+      };
+  
+      const resp = await axiosInstance.post('/Auth/Login', loginData);
+  
+     showAlert('success', resp.data.message);
+    } catch (err: any) {
+      if (err.code === 'ERR_NETWORK') {
+        showAlert('error', err.message)
+      } else {
+        showAlert('error', err.response.data.message);
+      }
+      
+    } finally {
+      setIsLoading(false);
     }
-
-    const loginData: ILoginUser = {
-      login: login!,
-      password: password!,
-    };
-
-    axiosInstance.post('/Auth/Login', loginData)
-    .then((response) => {  
-      setMessagePopup(response.data.message)
-      setTypeOfMessage('success')
-      showMessage()
-    }).catch(err => {
-      setMessagePopup(err.response.data.message)
-      setTypeOfMessage('error')
-      showMessage()
-    });
   };
+  
+  
 
   return (
     <>
-      {showPopup && <PopupMessages messageType={typeOfMessage} text={messagePopup}/>}
       <form action="#">
         <h1>Entrar</h1>
         <span>Use sua conta</span>

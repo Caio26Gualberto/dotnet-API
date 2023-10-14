@@ -3,6 +3,7 @@ import FormLogin from '../../components/form/FormLogin'
 import FormRegister from '../../components/form/FormRegister'
 import Style from './Login.module.css'
 import ForgotPassword from '../../components/modals/ForgotPasswordModal'
+import PopupMessages from '../../components/popupMessages/PopupMessages'
 
 
 const Login = () => {
@@ -28,6 +29,7 @@ const Login = () => {
 
   return (
     <>
+    <PopupMessages/>
     <h2 className={Style.welcome}>Bem-vindo a página do metal!</h2>
     <div className={`${Style.container} ${showRegister ? Style.right_panel_active : null}`}>
       <div className={`${Style.form_container} ${Style.sign_up_container}`}>

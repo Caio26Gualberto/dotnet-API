@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="../newLevel/src/index.css">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>New Level</title>
   </head>
@@ -12,10 +12,8 @@
     <script type="module" src="/src/main.tsx"></script>
     <script>
       if (window.location.pathname === '/') {
-        console.log('entrou')
         document.documentElement.classList.add('image-with-opacity')
       } else {
-        console.log('dale');
         document.documentElement.classList.remove('image-with-opacity')
       }
      </script>
