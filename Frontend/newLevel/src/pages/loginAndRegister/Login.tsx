@@ -29,6 +29,7 @@ const Login = () => {
 
   return (
     <>
+    <div className={Style.background_image}>
     <PopupMessages/>
     <h2 className={Style.welcome}>Bem-vindo a página do metal!</h2>
     <div className={`${Style.container} ${showRegister ? Style.right_panel_active : null}`}>
@@ -53,6 +54,7 @@ const Login = () => {
 				</div>
 			</div>
 		</div>
+    </div>
     </div>
     </>
   )

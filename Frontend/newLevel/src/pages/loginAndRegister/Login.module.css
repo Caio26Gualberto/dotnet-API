@@ -14,7 +14,7 @@
 	box-sizing: border-box;
 }
 
-body {
+.background_image {
 	margin: 0;
 	padding: 0;
 	background: #f6f5f7;
