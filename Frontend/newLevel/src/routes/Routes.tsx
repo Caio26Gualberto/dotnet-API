@@ -1,27 +1,38 @@
-import {BrowserRouter, Routes as Rotas, Route} from 'react-router-dom'
+import { BrowserRouter, Routes as Rotas, Route } from 'react-router-dom'
 import Login from '../pages/loginAndRegister/Login'
-import Navbar from '../components/navbar/Navbar'
-import Footer from '../components/footer/Footer'
 import { LoadingProvider } from '../context/LoadingContext'
 import Loading from '../components/loading/Loading'
 import { AlertProvider } from '../context/PopupContext'
 import ForgotPassword from '../pages/forgotPassword/ForgotPassword'
-
-
+import PostLogin from '../pages/postLogin/PostLogin'
+import Wrapper from './Wrapper'
 
 const Routes = () => {
+
   return (
     <LoadingProvider>
       <AlertProvider>
-      <BrowserRouter>
-      <Loading />
-        <Navbar/>
+        <BrowserRouter>
+          <Loading />
           <Rotas>
-            <Route path='/' element={<Login/>}/>
-            <Route path='forgotPassword' element={<ForgotPassword/>}/>
+            <Route
+              path="/"
+              element={
+                <Wrapper isLoginPage={true}>
+                  <Login />
+                </Wrapper>
+              }
+            />
+            <Route
+              path="forgotPassword"
+              element={<Wrapper><ForgotPassword /></Wrapper>}
+            />
+            <Route
+              path="postLogin"
+              element={<Wrapper><PostLogin /></Wrapper>}
+            />
           </Rotas>
-        <Footer/>
-      </BrowserRouter>
+        </BrowserRouter>
       </AlertProvider>
     </LoadingProvider>
   )

@@ -153,7 +153,7 @@ namespace dotnet_API.Services
                 ExpirationDate = token.Select(x => x.Value).Select(x => x.ExpirationDate).FirstOrDefault()
             };
         }
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512())
             {

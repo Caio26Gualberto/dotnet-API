@@ -43,7 +43,7 @@ namespace dotnet_API.Services
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress(environmentVariable.EmailLogin, "A New Level Music");
             var subject = emailPattern.ResetSubject;
-            var to = new EmailAddress(userEmail, userEmail.FriendlyEmailName());
+            var to = new EmailAddress(userEmail, userEmail.FriendlyEmailName ());
             var plainTextContent = $"Confirme seu email";
             var htmlContent = "<h3>Bem vindo headbanger</h3>" +
                 $"<p>Por favor confirme seu email{url}</p>";

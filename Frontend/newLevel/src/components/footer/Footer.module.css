@@ -1,0 +1,33 @@
+.footer {
+    background-color: #333;
+    /* Cor de fundo escura para o tema dark */
+    color: #fff;
+    /* Cor do texto */
+    padding: 20px;
+    text-align: center;
+    position: fixed;
+    /* Fixa o footer no rodapé da página */
+    bottom: 0;
+    width: 100%;
+}
+
+.social_icons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.social_icons a {
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+.social_icons img {
+    width: 30px;
+    /* Tamanho dos ícones */
+    height: 30px;
+}
+
+.copyright {
+    font-size: 14px;
+}

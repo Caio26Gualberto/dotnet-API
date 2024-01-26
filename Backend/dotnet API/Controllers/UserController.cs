@@ -63,7 +63,7 @@ namespace dotnet_API.Controllers
 
 
 
-        private bool IsVerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        public bool IsVerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512(passwordSalt))
             {
