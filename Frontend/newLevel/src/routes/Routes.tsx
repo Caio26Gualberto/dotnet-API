@@ -6,6 +6,7 @@ import { AlertProvider } from '../context/PopupContext'
 import ForgotPassword from '../pages/forgotPassword/ForgotPassword'
 import PostLogin from '../pages/postLogin/PostLogin'
 import Wrapper from './Wrapper'
+import PhotosTiles from '../pages/photosTiles/PhotosTiles'
 
 const Routes = () => {
 
@@ -29,7 +30,15 @@ const Routes = () => {
             />
             <Route
               path="postLogin"
-              element={<Wrapper><PostLogin /></Wrapper>}
+              element={
+                <Wrapper isLoginPage={true}>
+                  <PostLogin />
+                </Wrapper>
+              }
+            />
+            <Route
+              path="forgotPassword"
+              element={<Wrapper><PhotosTiles /></Wrapper>}
             />
           </Rotas>
         </BrowserRouter>

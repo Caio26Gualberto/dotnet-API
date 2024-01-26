@@ -6,6 +6,7 @@ import { ILoginUser } from '../../interfaces/ILoginUser';
 import { MouseEventHandler } from 'react';
 import { useLoading } from '../../context/LoadingContext';
 import { useAlert } from '../../context/PopupContext';
+import { redirect } from 'react-router-dom';
 
 const FormLogin: React.FC<{actionOpenModal: MouseEventHandler<HTMLAnchorElement> |undefined}> = ({actionOpenModal}) => {
   const [login, setLogin] = useState<string>('')
@@ -27,6 +28,15 @@ const FormLogin: React.FC<{actionOpenModal: MouseEventHandler<HTMLAnchorElement>
       };
   
       const resp = await axiosInstance.post('/Auth/Login', loginData);
+      debugger
+      const token = resp.data.token;
+      document.cookie = `token=${token}; path=/`;
+
+      if (resp.data.firstTimeLogin) {
+        window.location.href = 'http://127.0.0.1:5173/PostLogin'
+      } else {
+        showAlert('success', 'Deu certo');
+      }
   
      showAlert('success', resp.data.message);
     } catch (err: any) {

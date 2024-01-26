@@ -150,7 +150,8 @@ namespace dotnet_API.Services
                 Message = "Bem-vindo!",
                 Token = token.Keys.First(),
                 IsSuccess = true,
-                ExpirationDate = token.Select(x => x.Value).Select(x => x.ExpirationDate).FirstOrDefault()
+                ExpirationDate = token.Select(x => x.Value).Select(x => x.ExpirationDate).FirstOrDefault(),
+                FirstTimeLogin = user.FirstTimeLogin
             };
         }
         public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -167,7 +168,7 @@ namespace dotnet_API.Services
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Login),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim("userId", user.Id.ToString()),
                 new Claim("Email", user.Email)
             };
 
@@ -191,9 +192,9 @@ namespace dotnet_API.Services
         }
         public async Task<string> GenerateURI(string email, int id)
         {
-            string emailCodificado = HttpUtility.UrlEncode(email);
-            string urlDeRedirecionamento = $"http://localhost:5500/ForgotPassword/forgotPassword.html?Email={emailCodificado}&Id={id}";
-            return urlDeRedirecionamento;
+            string encryptedEmail = HttpUtility.UrlEncode(email);
+            string redirectUrl = $"http://localhost:5500/ForgotPassword/forgotPassword.html?Email={encryptedEmail}&Id={id}";
+            return redirectUrl;
         }
 
         public void GenerateNewPassword(User user, string password)

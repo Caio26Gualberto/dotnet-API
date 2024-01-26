@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -68,6 +69,25 @@ app.UseCors();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+app.Use(async (context, next) =>
+{
+    var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+    if (token != null)
+    {
+        var jwtTokenHandler = new JwtSecurityTokenHandler();
+        var jwtToken = jwtTokenHandler.ReadToken(token) as JwtSecurityToken;
+
+        // Obtenha o ID do usuário do token (supondo que o ID seja uma reivindicação no token)
+        var userId = jwtToken?.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
+
+        // Adicione o ID do usuário ao contexto da solicitação
+        if (!string.IsNullOrEmpty(userId))
+            context.Items["UserId"] = userId;
+    }
+
+    await next();
+});
 app.UseAuthorization();
 
 app.MapControllers();

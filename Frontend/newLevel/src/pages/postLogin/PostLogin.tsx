@@ -1,5 +1,6 @@
 import React from 'react';
 import Style from '../postLogin/postLogin.module.css'; // Certifique-se de ter o arquivo CSS para os estilos específicos
+import Button from 'react-bootstrap/Button';
 
 const PostLogin: React.FC = () => {
     return (
@@ -18,6 +19,9 @@ const PostLogin: React.FC = () => {
 
                     Junte-se a nós, e vamos juntos resgatar as batidas intensas, as guitarras estridentes e a energia única que define o verdadeiro espírito do metal. New Level é mais do que um portal, é uma celebração da paixão que transcende gerações. \m/
                 </p>
+                <div className={Style.button}>
+                    <Button variant="outline-light" size='lg'>Começar</Button>
+                </div>
             </div>
         </div>
     );

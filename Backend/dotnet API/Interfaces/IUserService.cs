@@ -17,6 +17,5 @@ namespace dotnet_API.Interfaces
         public Task<Dictionary<string, UserManagerResponse>> CreateToken(User user);
         public Task<string> GenerateURI(string email, int id);
         public void GenerateNewPassword(User user, string password);
-        public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt);
     }
 }
