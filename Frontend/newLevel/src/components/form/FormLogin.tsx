@@ -6,13 +6,12 @@ import { ILoginUser } from '../../interfaces/ILoginUser';
 import { MouseEventHandler } from 'react';
 import { useLoading } from '../../context/LoadingContext';
 import { useAlert } from '../../context/PopupContext';
-import { redirect } from 'react-router-dom';
 
-const FormLogin: React.FC<{actionOpenModal: MouseEventHandler<HTMLAnchorElement> |undefined}> = ({actionOpenModal}) => {
+const FormLogin: React.FC<{ actionOpenModal: MouseEventHandler<HTMLAnchorElement> | undefined }> = ({ actionOpenModal }) => {
   const [login, setLogin] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const { setIsLoading } = useLoading();
-  const {showAlert} = useAlert()
+  const { showAlert } = useAlert()
 
   const loginRequest = async () => {
     try {
@@ -20,38 +19,36 @@ const FormLogin: React.FC<{actionOpenModal: MouseEventHandler<HTMLAnchorElement>
         showAlert('info', 'Preencha os campos')
       } else {
         setIsLoading(true);
-      }  
-      
+      }
+
       const loginData: ILoginUser = {
         login: login!,
         password: password!,
       };
-  
+
       const resp = await axiosInstance.post('/Auth/Login', loginData);
-      debugger
       const token = resp.data.token;
-      document.cookie = `token=${token}; path=/`;
+      document.cookie = `Authorization=${token}; path=/;`;
 
       if (resp.data.firstTimeLogin) {
         window.location.href = 'http://127.0.0.1:5173/PostLogin'
       } else {
-        showAlert('success', 'Deu certo');
+        showAlert('success', resp.data.message);
       }
-  
-     showAlert('success', resp.data.message);
+
     } catch (err: any) {
       if (err.code === 'ERR_NETWORK') {
         showAlert('error', err.message)
       } else {
         showAlert('error', err.response.data.message);
       }
-      
+
     } finally {
       setIsLoading(false);
     }
   };
-  
-  
+
+
 
   return (
     <>

@@ -1,8 +1,34 @@
 import React from 'react';
-import Style from '../postLogin/postLogin.module.css'; // Certifique-se de ter o arquivo CSS para os estilos específicos
+import Style from '../postLogin/postLogin.module.css';
 import Button from 'react-bootstrap/Button';
+import axiosInstance from '../../axiosInstances';
+import { useLoading } from '../../context/LoadingContext';
+import { useAlert } from '../../context/PopupContext';
+
 
 const PostLogin: React.FC = () => {
+    const { setIsLoading } = useLoading();
+    const { showAlert } = useAlert()
+
+    const Continue = async () => {
+        showAlert('error', 'Algo inesperado aconteceu, tente novamente mais tarde')
+
+        try {
+            setIsLoading(true)
+            const resp = await axiosInstance.get('/Auth/ContinueToMainPage')
+            if (resp.data.isSuccess) {
+                showAlert('success', 'Bem vindo!')
+                window.location.href = '/Photos'
+            }
+
+        } catch (err: any) {
+            showAlert('error', 'Algo inesperado aconteceu, tente novamente mais tarde')
+            
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <div className={Style.post_login_container}>
             <div className={Style.background_image}></div>
@@ -20,7 +46,7 @@ const PostLogin: React.FC = () => {
                     Junte-se a nós, e vamos juntos resgatar as batidas intensas, as guitarras estridentes e a energia única que define o verdadeiro espírito do metal. New Level é mais do que um portal, é uma celebração da paixão que transcende gerações. \m/
                 </p>
                 <div className={Style.button}>
-                    <Button variant="outline-light" size='lg'>Começar</Button>
+                    <Button variant="outline-light" size='lg' onClick={Continue}>Começar</Button>
                 </div>
             </div>
         </div>

@@ -37,7 +37,7 @@ const Routes = () => {
               }
             />
             <Route
-              path="forgotPassword"
+              path="photosTiles"
               element={<Wrapper><PhotosTiles /></Wrapper>}
             />
           </Rotas>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using dotnet_API.Models;
 
@@ -11,9 +12,11 @@ using dotnet_API.Models;
 namespace dotnet_API.Migrations
 {
     [DbContext(typeof(ANewLevelContext))]
-    partial class ANewLevelContextModelSnapshot : ModelSnapshot
+    [Migration("20240127061315_AddingUserTokenAssociationTable")]
+    partial class AddingUserTokenAssociationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

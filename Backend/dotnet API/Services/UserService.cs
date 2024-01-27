@@ -1,9 +1,11 @@
-﻿using dotnet_API.Dtos;
+﻿using Dapper;
+using dotnet_API.Controllers.Dto;
 using dotnet_API.Entities;
 using dotnet_API.Interfaces;
 using dotnet_API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -20,18 +22,18 @@ namespace dotnet_API.Services
         private readonly ANewLevelContext _context;
         private readonly EnvironmentVariable _environment;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
         private readonly IRepository<User> _userRepository;
+        private readonly IRepository<UserTokenAssociation> _userTokenAssociation;
         private readonly IEmailService _emailService;
-        public UserService(ANewLevelContext context, EnvironmentVariable environment, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager,
-            IRepository<User> repository, IEmailService emailService)
+        public UserService(ANewLevelContext context, EnvironmentVariable environment, UserManager<IdentityUser> userManager,
+            IRepository<User> repository, IEmailService emailService, IRepository<UserTokenAssociation> userTokenAssociation)
         {
             _context = context;
             _environment = environment;
             _userManager = userManager;
-            _signInManager = signInManager;
             _userRepository = repository;
             _emailService = emailService;
+            _userTokenAssociation = userTokenAssociation;
         }
         public void CreateUser(User input)
         {
@@ -60,7 +62,7 @@ namespace dotnet_API.Services
             _context.SaveChanges();
         }
 
-        public async Task<UserManagerResponse> RegisterAccountAsync(CreateUserDto input)
+        public async Task<UserManagerResponse> RegisterAsync(CreateUserDto input)
         {
             if (input == null)
                 throw new NullReferenceException("Campo está vazio!");
@@ -144,13 +146,23 @@ namespace dotnet_API.Services
                 };
 
             var token = await CreateToken(user);
+            var refreshToken = await RefreshTokenAsync(user.Id, true);
+
+            UserTokenAssociation refreshTokenAssociation = new UserTokenAssociation()
+            {
+                UserId = user.Id,
+                RefreshToken = refreshToken
+            };
+
+            _context.UserTokenAssociations.Add(refreshTokenAssociation);
+            await _context.SaveChangesAsync();
 
             return new UserManagerResponse
             {
                 Message = "Bem-vindo!",
                 Token = token.Keys.First(),
+                RefreshToken = refreshToken,
                 IsSuccess = true,
-                ExpirationDate = token.Select(x => x.Value).Select(x => x.ExpirationDate).FirstOrDefault(),
                 FirstTimeLogin = user.FirstTimeLogin
             };
         }
@@ -165,27 +177,27 @@ namespace dotnet_API.Services
         public async Task<Dictionary<string, UserManagerResponse>> CreateToken(User user)
         {
             Dictionary<string, UserManagerResponse> dictionary = new Dictionary<string, UserManagerResponse>();
-            List<Claim> claims = new List<Claim>
+            var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Login),
-                new Claim("userId", user.Id.ToString()),
-                new Claim("Email", user.Email)
+                new Claim("userId", user.Id.ToString())
             };
 
-            var takeSecretKey = _environment.JWTApiToken;
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(takeSecretKey));
-            var credential = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_environment.JWTApiToken));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddHours(2),
-                signingCredentials: credential);
+                expires: DateTime.UtcNow.AddHours(2),
+                signingCredentials: credentials
+            );
 
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-            dictionary.Add(jwt, new UserManagerResponse
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenString = tokenHandler.WriteToken(token);
+
+            dictionary.Add(tokenString, new UserManagerResponse
             {
-                Message = jwt,
                 IsSuccess = true,
-                ExpirationDate = token.ValidTo
+                Message = tokenString
             });
 
             return dictionary;
@@ -299,6 +311,55 @@ namespace dotnet_API.Services
                 IsSuccess = false,
                 Errors = result.Errors.Select(x => x.Description)
             };
+        }
+
+        public async Task<UserManagerResponse> ContinueToMainPageAsync(int userId)
+        {
+            try
+            {
+                var user = _userRepository.GetAll().FirstOrDefault(x => x.Id == userId);
+                user!.FirstTimeLogin = false;
+                _context.Usuarios.Update(user);
+                await _context.SaveChangesAsync();
+
+                return new UserManagerResponse
+                {
+                    IsSuccess = true
+                };
+            }
+            catch (Exception e)
+            {
+                throw e.InnerException!;
+            }
+        }
+
+        public async Task<string> RefreshTokenAsync(int userId, bool isLogin = false)
+        {
+            IEnumerable<UserTokenAssociation>? tokenAssociation = null;
+            if (!isLogin)
+            {
+                //_environment.LocalDb
+                using (var connection = new SqlConnection("Server=DESKTOP-RFQMKVA;Database=NewLevel;Trusted_Connection=True;TrustServerCertificate=True;"))
+                {
+                    string query = "SELECT * FROM UsuarioRefreshAssociacao WHERE CAST(SUBSTRING(RefreshToken, CHARINDEX('-', RefreshToken) + 1, LEN(RefreshToken)) AS INT) = @UserId";
+
+                    tokenAssociation = connection.Query<UserTokenAssociation>(query, new { UserId = userId });
+                }
+
+                return await GenerateRefreshToken(tokenAssociation.First().UserId);
+            }
+            else
+            {
+                return await GenerateRefreshToken(userId);
+            }
+        }
+
+        private async Task<string> GenerateRefreshToken(int userId)
+        {
+            var randomBytes = new Byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomBytes);
+            return Convert.ToBase64String(randomBytes) + ($"-{userId}");
         }
     }
 }

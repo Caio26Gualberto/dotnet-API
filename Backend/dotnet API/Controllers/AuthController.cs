@@ -1,5 +1,6 @@
-﻿using dotnet_API.Dtos;
+﻿using dotnet_API.Controllers.Dto;
 using dotnet_API.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_API.Controllers
@@ -15,11 +16,11 @@ namespace dotnet_API.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterAsync([FromBody] CreateUserDto input)
+        public async Task<IActionResult> Register([FromBody] CreateUserDto input)
         {
             if (ModelState.IsValid)
             {
-                var result = await _userService.RegisterAccountAsync(input);
+                var result = await _userService.RegisterAsync(input);
 
                 if (result.IsSuccess)
                     return Ok(result);
@@ -30,8 +31,9 @@ namespace dotnet_API.Controllers
             return BadRequest(new { Message = "Alguma propriedade não é valida" });
         }
 
+        [AllowAnonymous]
         [HttpPost("Login")]
-        public async Task<IActionResult> LoginAsync(LoginDto input)
+        public async Task<IActionResult> Login(LoginDto input)
         {
             if (ModelState.IsValid)
             {
@@ -45,6 +47,7 @@ namespace dotnet_API.Controllers
             return BadRequest(new { Message = "Alguma propriedade não é valida" });
         }
 
+        [AllowAnonymous]
         [HttpGet("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
@@ -59,6 +62,7 @@ namespace dotnet_API.Controllers
             return BadRequest(new { Message = "Alguma propriedade não é valida" });
         }
 
+        [AllowAnonymous]
         [HttpPost("ForgetPassword")]
         public async Task<IActionResult> ForgetPassoword(string email)
         {
@@ -73,6 +77,7 @@ namespace dotnet_API.Controllers
             return BadRequest(result);
         }
 
+        [AllowAnonymous]
         [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPassword(UpdatePasswordDto input)
         {
@@ -85,6 +90,32 @@ namespace dotnet_API.Controllers
 
                 return BadRequest(result);
             }
+
+            return BadRequest(new { Message = "Alguma propriedade não é valida" });
+        }
+
+        [HttpGet("ContinueToMainPage")]
+        public async Task<IActionResult> ContinueToMainPage()
+        {
+            var userId = Convert.ToInt32(HttpContext.Items["Authorization"]);
+
+            var result = await _userService.ContinueToMainPageAsync(userId);
+
+            if (result.IsSuccess)
+                return Ok(result);
+
+            return BadRequest(new { Message = "Alguma propriedade não é valida" });
+        }
+
+        [HttpGet("RefreshToken")]
+        public async Task<IActionResult> RefreshToken()
+        {
+            var userId = Convert.ToInt32(HttpContext.Items["Authorization"]);
+
+            var result = await _userService.RefreshTokenAsync(userId);
+
+            if (!string.IsNullOrEmpty(result))
+                return Ok(result);
 
             return BadRequest(new { Message = "Alguma propriedade não é valida" });
         }

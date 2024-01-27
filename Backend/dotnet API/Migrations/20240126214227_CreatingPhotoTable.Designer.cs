@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using dotnet_API.Models;
 
@@ -11,9 +12,11 @@ using dotnet_API.Models;
 namespace dotnet_API.Migrations
 {
     [DbContext(typeof(ANewLevelContext))]
-    partial class ANewLevelContextModelSnapshot : ModelSnapshot
+    [Migration("20240126214227_CreatingPhotoTable")]
+    partial class CreatingPhotoTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -311,29 +314,6 @@ namespace dotnet_API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Usuarios");
-                });
-
-            modelBuilder.Entity("dotnet_API.Models.UserTokenAssociation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("RefreshToken")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RefreshToken")
-                        .IsUnique();
-
-                    b.ToTable("UsuarioRefreshAssociacao");
                 });
 
             modelBuilder.Entity("dotnet_API.Services.SpotifyService+ApiKey", b =>
