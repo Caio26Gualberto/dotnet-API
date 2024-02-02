@@ -3,19 +3,24 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 export class ApiClient {
     private baseUrl: string;
     private token: string | null = null;
-    private authObject: any;
 
-    constructor(baseUrl: string, authObject: any) {
+    constructor(baseUrl: string) {
         if (baseUrl === '') throw new Error('Base URL is empty');
-        this.baseUrl = 'https://localhost:7213/api';
-        this.authObject = authObject;
-        this.token = document.cookie;
+        this.baseUrl = baseUrl;
+        this.token = window.localStorage.getItem('Authorization');
     }
 
     private async refreshToken() {
         try {
-            const response = await axios.post(`${this.baseUrl}/Auth/RefreshToken`, this.authObject);
-            this.token = response.data.token;
+            debugger
+            const headers: any = {
+                'Content-Type': 'application/json',
+            };
+            if (this.token) {
+                headers['Authorization'] = `${this.token}`;
+            }
+            const response = await axios.get(`${this.baseUrl}/Auth/RefreshToken`, {headers: headers});
+            this.token = `${response.data}`
         } catch (error: any) {
             throw new Error('Error refreshing token: ' + error.message);
         }
@@ -30,9 +35,8 @@ export class ApiClient {
         const headers: any = {
             'Content-Type': 'application/json',
         };
-
         if (this.token) {
-            headers['Authorization'] = `Bearer ${this.token}`;
+            headers['Authorization'] = `${this.token}`;
         }
 
         const axiosConfig: AxiosRequestConfig = {

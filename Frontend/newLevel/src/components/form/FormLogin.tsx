@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import Input from '../input/Input';
 import Style from './FormLogin.module.css';
-import axiosInstance from '../../axiosInstances';
 import { ILoginUser } from '../../interfaces/ILoginUser';
 import { MouseEventHandler } from 'react';
 import { useLoading } from '../../context/LoadingContext';
 import { useAlert } from '../../context/PopupContext';
+import { ApiClient } from '../../api/axiosInstanceApi';
+import { IUserManagerResponse } from '../../interfaces/IUserManagerResponse';
 
 const FormLogin: React.FC<{ actionOpenModal: MouseEventHandler<HTMLAnchorElement> | undefined }> = ({ actionOpenModal }) => {
   const [login, setLogin] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const { setIsLoading } = useLoading();
   const { showAlert } = useAlert()
+  const axios = new ApiClient('https://localhost:7213/api')
 
   const loginRequest = async () => {
     try {
@@ -25,15 +27,13 @@ const FormLogin: React.FC<{ actionOpenModal: MouseEventHandler<HTMLAnchorElement
         login: login!,
         password: password!,
       };
-
-      const resp = await axiosInstance.post('/Auth/Login', loginData);
-      const token = resp.data.token;
-      document.cookie = `Authorization=${token}; path=/;`;
-
-      if (resp.data.firstTimeLogin) {
-        window.location.href = 'http://127.0.0.1:5173/PostLogin'
+      const resp = await axios.post('/Auth/Login', loginData) as IUserManagerResponse;
+      const token = resp.token;
+      window.localStorage.setItem("Authorization" , token)
+      if (!resp.isSkipedFirstPage) {
+        window.location.href = 'http://localhost:5173/PostLogin'
       } else {
-        showAlert('success', resp.data.message);
+        showAlert('success', resp.message);
       }
 
     } catch (err: any) {

@@ -3,11 +3,9 @@ using dotnet_API.Models;
 using dotnet_API.Repositories;
 using dotnet_API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,10 +25,24 @@ builder.Services.AddAuthentication(auth =>
         RequireExpirationTime = true,
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("SecretKey"))),
-        ValidateIssuer = false,
-        ValidateAudience = false,
+        ValidateIssuer = false, // Pode ser true, dependendo dos requisitos
+        ValidateAudience = false, // Pode ser true, dependendo dos requisitos
+    };
+    options.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = context =>
+        {
+            var expirationDate = context.SecurityToken.ValidTo;
+            if (expirationDate < DateTime.UtcNow)
+            {
+                context.Fail("Token expirado");
+            }
+
+            return Task.CompletedTask;
+        }
     };
 });
+
 builder.Services.AddAuthorization();
 builder.Services.AddCors(options =>
 {

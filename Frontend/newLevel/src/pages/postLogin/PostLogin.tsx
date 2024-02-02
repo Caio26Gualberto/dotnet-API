@@ -1,22 +1,24 @@
 import React from 'react';
 import Style from '../postLogin/postLogin.module.css';
 import Button from 'react-bootstrap/Button';
-import axiosInstance from '../../axiosInstances';
 import { useLoading } from '../../context/LoadingContext';
 import { useAlert } from '../../context/PopupContext';
+import { ApiClient } from '../../api/axiosInstanceApi';
+import { IUserManagerResponse } from '../../interfaces/IUserManagerResponse';
 
 
 const PostLogin: React.FC = () => {
     const { setIsLoading } = useLoading();
     const { showAlert } = useAlert()
+    const axios = new ApiClient('https://localhost:7213/api')
 
     const Continue = async () => {
         showAlert('error', 'Algo inesperado aconteceu, tente novamente mais tarde')
 
         try {
             setIsLoading(true)
-            const resp = await axiosInstance.get('/Auth/ContinueToMainPage')
-            if (resp.data.isSuccess) {
+            const resp = await axios.get('/Auth/ContinueToMainPage') as IUserManagerResponse
+            if (resp.isSuccess) {
                 showAlert('success', 'Bem vindo!')
                 window.location.href = '/Photos'
             }

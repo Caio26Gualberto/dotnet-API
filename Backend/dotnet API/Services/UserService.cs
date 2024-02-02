@@ -75,6 +75,16 @@ namespace dotnet_API.Services
                     IsSuccess = false
                 };
             }
+
+            var hasEmailOrLoginAlreadyRegistered = _userRepository.GetAll().Any(x => x.Login == input.Login || x.Login == input.Email || x.Email == input.Login || x.Email == input.Email);
+
+            if (hasEmailOrLoginAlreadyRegistered)
+                return new UserManagerResponse
+                {
+                    IsSuccess = false,
+                    Message = "Credenciais já utilizadas em outras contas"
+                };
+
             var identityUser = new IdentityUser
             {
 
@@ -113,9 +123,8 @@ namespace dotnet_API.Services
 
             return new UserManagerResponse
             {
-                Message = "Houve algum erro ao criar sua conta",
-                IsSuccess = false,
-                Errors = result.Errors.Select(x => x.Description)
+                Message = result.Errors.Select(x => x.Description).First().ToString(),
+                IsSuccess = false
             };
         }
 
@@ -145,24 +154,33 @@ namespace dotnet_API.Services
                     IsSuccess = false
                 };
 
-            var token = await CreateToken(user);
-            var refreshToken = await RefreshTokenAsync(user.Id, true);
+            var token = await CreateToken(user.Id);
+            bool hasRefreshToken = _userTokenAssociation.GetAll().Any(x => x.UserId == user.Id);
 
-            UserTokenAssociation refreshTokenAssociation = new UserTokenAssociation()
+            if (!hasRefreshToken)
             {
-                UserId = user.Id,
-                RefreshToken = refreshToken
-            };
+                var refreshToken = await RefreshTokenAsync(user.Id, forceRefreshToken: true, user);
 
-            _context.UserTokenAssociations.Add(refreshTokenAssociation);
+                UserTokenAssociation refreshTokenAssociation = new UserTokenAssociation()
+                {
+                    UserId = user.Id,
+                    RefreshToken = refreshToken
+                };
+
+                _context.UserTokenAssociations.Add(refreshTokenAssociation);
+                await _context.SaveChangesAsync();
+            }
+
+            user.FirstTimeLogin = false;
+            _context.Usuarios.Update(user);
             await _context.SaveChangesAsync();
 
             return new UserManagerResponse
             {
                 Message = "Bem-vindo!",
-                Token = token.Keys.First(),
-                RefreshToken = refreshToken,
+                Token = token,
                 IsSuccess = true,
+                IsSkipedFirstPage = user.IsSkipedFirstPage,
                 FirstTimeLogin = user.FirstTimeLogin
             };
         }
@@ -174,12 +192,11 @@ namespace dotnet_API.Services
                 passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
             }
         }
-        public async Task<Dictionary<string, UserManagerResponse>> CreateToken(User user)
+        public async Task<string> CreateToken(int userId)
         {
-            Dictionary<string, UserManagerResponse> dictionary = new Dictionary<string, UserManagerResponse>();
             var claims = new List<Claim>
             {
-                new Claim("userId", user.Id.ToString())
+                new Claim("userId", userId.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_environment.JWTApiToken));
@@ -187,20 +204,14 @@ namespace dotnet_API.Services
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(2),
+                expires: DateTime.UtcNow.AddMinutes(2),
                 signingCredentials: credentials
             );
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenString = tokenHandler.WriteToken(token);
 
-            dictionary.Add(tokenString, new UserManagerResponse
-            {
-                IsSuccess = true,
-                Message = tokenString
-            });
-
-            return dictionary;
+            return tokenString;
         }
         public async Task<string> GenerateURI(string email, int id)
         {
@@ -313,10 +324,11 @@ namespace dotnet_API.Services
             };
         }
 
-        public async Task<UserManagerResponse> ContinueToMainPageAsync(int userId)
+        public async Task<UserManagerResponse> ContinueToMainPageAsync()
         {
             try
             {
+                var userId = UserContext.UserId;
                 var user = _userRepository.GetAll().FirstOrDefault(x => x.Id == userId);
                 user!.FirstTimeLogin = false;
                 _context.Usuarios.Update(user);
@@ -333,24 +345,30 @@ namespace dotnet_API.Services
             }
         }
 
-        public async Task<string> RefreshTokenAsync(int userId, bool isLogin = false)
+        public async Task<string> RefreshTokenAsync(int userId, bool forceRefreshToken = false, User user = null)
         {
             IEnumerable<UserTokenAssociation>? tokenAssociation = null;
-            if (!isLogin)
+            if (!forceRefreshToken)
             {
-                //_environment.LocalDb
-                using (var connection = new SqlConnection("Server=DESKTOP-RFQMKVA;Database=NewLevel;Trusted_Connection=True;TrustServerCertificate=True;"))
+                using (var connection = new SqlConnection(_environment.LocalDb))
                 {
                     string query = "SELECT * FROM UsuarioRefreshAssociacao WHERE CAST(SUBSTRING(RefreshToken, CHARINDEX('-', RefreshToken) + 1, LEN(RefreshToken)) AS INT) = @UserId";
 
                     tokenAssociation = connection.Query<UserTokenAssociation>(query, new { UserId = userId });
                 }
 
-                return await GenerateRefreshToken(tokenAssociation.First().UserId);
+                if (tokenAssociation == null || tokenAssociation.Count() <= 0)
+                    return string.Empty;
+
+                return await CreateToken(tokenAssociation.First().UserId);
             }
             else
             {
-                return await GenerateRefreshToken(userId);
+                if (user.FirstTimeLogin)
+                    return await GenerateRefreshToken(userId);
+
+                else return await RefreshTokenAsync(userId, forceRefreshToken: true);
+                        
             }
         }
 

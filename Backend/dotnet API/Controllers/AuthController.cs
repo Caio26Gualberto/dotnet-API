@@ -94,12 +94,11 @@ namespace dotnet_API.Controllers
             return BadRequest(new { Message = "Alguma propriedade não é valida" });
         }
 
+        [Authorize]
         [HttpGet("ContinueToMainPage")]
         public async Task<IActionResult> ContinueToMainPage()
         {
-            var userId = Convert.ToInt32(HttpContext.Items["Authorization"]);
-
-            var result = await _userService.ContinueToMainPageAsync(userId);
+            var result = await _userService.ContinueToMainPageAsync();
 
             if (result.IsSuccess)
                 return Ok(result);
@@ -110,9 +109,7 @@ namespace dotnet_API.Controllers
         [HttpGet("RefreshToken")]
         public async Task<IActionResult> RefreshToken()
         {
-            var userId = Convert.ToInt32(HttpContext.Items["Authorization"]);
-
-            var result = await _userService.RefreshTokenAsync(userId);
+            var result = await _userService.RefreshTokenAsync((int)UserContext.UserId);
 
             if (!string.IsNullOrEmpty(result))
                 return Ok(result);

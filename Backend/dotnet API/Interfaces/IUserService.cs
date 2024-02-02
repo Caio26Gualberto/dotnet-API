@@ -14,10 +14,10 @@ namespace dotnet_API.Interfaces
         public Task<UserManagerResponse> ForgetPasswordAsync(string email);
         public Task<UserManagerResponse> ResetPasswordAsync(UpdatePasswordDto input);
         public Task<UserManagerResponse> LoginAsync(LoginDto input);
-        public Task<Dictionary<string, UserManagerResponse>> CreateToken(User user);
+        public Task<string> CreateToken(int userId);
         public Task<string> GenerateURI(string email, int id);
         public void GenerateNewPassword(User user, string password);
-        public Task<UserManagerResponse> ContinueToMainPageAsync(int userId);
-        public Task<string> RefreshTokenAsync(int userId, bool isLogin = false);
+        public Task<UserManagerResponse> ContinueToMainPageAsync();
+        public Task<string> RefreshTokenAsync(int userId, bool forceRefreshToken = false, User user = null);
     }
 }

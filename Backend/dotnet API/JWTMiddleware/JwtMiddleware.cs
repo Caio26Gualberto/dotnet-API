@@ -13,9 +13,14 @@ public class JwtMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        var token = context.Request.Cookies["Authorization"];
+        var tokenHeaderValue = context.Request.Headers["Authorization"];
+        string token = string.Empty;
 
-        if (token != null)
+        if (!string.IsNullOrEmpty(tokenHeaderValue))
+            token = tokenHeaderValue.ToString();
+
+
+        if (!string.IsNullOrEmpty(token))
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var jwtToken = jwtTokenHandler.ReadToken(token) as JwtSecurityToken;
@@ -24,7 +29,7 @@ public class JwtMiddleware
 
             if (!string.IsNullOrEmpty(userId))
             {
-                context.Items["userId"] = userId;
+                UserContext.UserId = int.Parse(userId);
             }
         }
 

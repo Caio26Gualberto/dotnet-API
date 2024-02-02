@@ -20,5 +20,6 @@ namespace dotnet_API.Models
         public string? BirthPlace { get; set; }
         public DateTime DataRecord { get; set; }
         public bool FirstTimeLogin { get; set; } = true;
+        public bool IsSkipedFirstPage { get; set; } = false;
     }
 }
