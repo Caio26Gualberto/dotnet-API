@@ -32,7 +32,7 @@ export class ApiClient {
         data?: any,
         config?: AxiosRequestConfig
     ): Promise<T> {
-        const headers: any = {
+        const headers: any = {a
             'Content-Type': 'application/json',
         };
         if (this.token) {
